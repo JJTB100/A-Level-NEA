@@ -4,6 +4,11 @@ namespace PianoChordsGame
 {
     public partial class Form1 : Form
     {
+        public WaveIn waveIn;
+        public BufferedWaveProvider bwp;
+        private int RATE = 44100;
+        private int BUFFERSIZE = (int)Math.Pow(2, 13);
+
         public Form1()
         {
             InitializeComponent();
@@ -12,39 +17,93 @@ namespace PianoChordsGame
                 var caps = NAudio.Wave.WaveIn.GetCapabilities(i);
                 comboBox1.Items.Add($"{i}: {caps.ProductName}");
             }
-
+            comboBox1.SelectedIndex = 1;
+            //initialise WaveIn class
+            waveIn = new WaveIn
+            {
+                DeviceNumber = comboBox1.SelectedIndex - 1,
+                WaveFormat = new WaveFormat(RATE, 1)
+            };
+            SetupGraphLabels();
         }
 
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            var waveIn = new NAudio.Wave.WaveInEvent
-            {
-                DeviceNumber = comboBox1.SelectedIndex, // indicates which microphone to use
-                WaveFormat = new NAudio.Wave.WaveFormat(rate: 44100, bits: 16, channels: 1),
-                BufferMilliseconds = 20
-            };
+            //start sound buffer
+            waveIn.DataAvailable += new EventHandler<WaveInEventArgs>(waveIn_DataAvailable);
+            bwp = new BufferedWaveProvider(waveIn.WaveFormat);
+            bwp.BufferLength = BUFFERSIZE * 2;
 
-            waveIn.DataAvailable += WaveIn_DataAvailable;
+            bwp.DiscardOnBufferOverflow = true;
             waveIn.StartRecording();
+            btnStart.Enabled = false;
+            timerUpdateGraph.Start();
+
         }
-        void WaveIn_DataAvailable(object? sender, NAudio.Wave.WaveInEventArgs e)
+
+        private void waveIn_DataAvailable(object? sender, WaveInEventArgs e)
         {
-            // copy buffer into an array of integers
-            Int16[] values = new Int16[e.Buffer.Length / 2];
-            Buffer.BlockCopy(e.Buffer, 0, values, 0, e.Buffer.Length);
+            //Add data to buffer
+            bwp.AddSamples(e.Buffer, 0, e.BytesRecorded);
+        }
 
-            Console.WriteLine(e.Buffer.ToString());
-            float fraction = (float)(values.Max() / 32768 * 100);
-            int percent = (int)Math.Ceiling(fraction);
+        private void timerUpdateGraph_Tick(object sender, EventArgs e)
+        {
+            Console.WriteLine("TICK");
+            //read bytes from bwp into frames
+            int frameSize = BUFFERSIZE;
+            var frames = new byte[frameSize];
+            bwp.Read(frames, 0, frameSize);
 
-            //output to volume meter
-            pbVolume.Value = percent;
-            string bar = new('#', (int)(fraction * 70));
-            string meter = "[" + bar.PadRight(60, '-') + "]";
-            Console.CursorLeft = 0;
-            Console.CursorVisible = false;
-            Console.Write($"{meter} {fraction * 100:00.0}%");
+            //check that the buffer isn't empty
+            if (frames.Length == 0) return;
+            if (frames[frameSize - 2] == 0) return;
+
+            timerUpdateGraph.Enabled = false; //disable timer whilst maths happens
+
+            //pull PCM values from the buffer
+            // incoming data is 16-bit (2 bytes per audio point)
+            int BYTES_PER_POINT = 2;
+
+            // create a (32-bit) int array ready to fill with the 16-bit data
+            int graphPointCount = frames.Length / BYTES_PER_POINT;
+
+            // create double array to hold the data we will graph
+            double[] pcm = new double[graphPointCount];
+
+            // populate Xs and Ys with double data
+            for (int i = 0; i < graphPointCount; i++)
+            {
+                // read the int16 from the two bytes
+                var val = BitConverter.ToInt16(frames, i * 2);
+
+                // store the value in Ys as a percent (+/- 100% = 200%)
+                pcm[i] = (double)(val) / Math.Pow(2, 16) * 200.0;
+
+            }
+
+            // determine horizontal axis units for graph
+            double pcmPointSpacingMs = RATE / 1000;
+
+            // plot the Xs and Ys for both graphs
+            ScottPCM.Plot.Clear();
+            ScottPCM.Plot.AddSignal(pcm, pcmPointSpacingMs);
+            ScottPCM.Plot.AxisAuto();
+            ScottPCM.Refresh();
+
+            //re-enable timer
+            timerUpdateGraph.Enabled = true;
+
+
+            Application.DoEvents();
+
+        }
+        public void SetupGraphLabels()
+        {
+            ScottPCM.Plot.Title("Microphone PCM Data");
+            ScottPCM.Plot.YLabel("Amplitude (PCM)");
+            ScottPCM.Plot.XLabel("Time (ms)");
         }
     }
 

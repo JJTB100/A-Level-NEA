@@ -28,9 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             pbVolume = new ProgressBar();
             comboBox1 = new ComboBox();
             btnStart = new Button();
+            timerUpdateGraph = new System.Windows.Forms.Timer(components);
+            this.ScottPCM = new ScottPlot.FormsPlot();
             SuspendLayout();
             // 
             // pbVolume
@@ -58,11 +61,25 @@
             btnStart.UseVisualStyleBackColor = true;
             btnStart.Click += btnStart_Click;
             // 
+            // timerUpdateGraph
+            // 
+            timerUpdateGraph.Interval = 10;
+            timerUpdateGraph.Tick += timerUpdateGraph_Tick;
+            // 
+            // ScottPCM
+            // 
+            this.ScottPCM.Location = new Point(12, 65);
+            this.ScottPCM.Margin = new Padding(4, 3, 4, 3);
+            this.ScottPCM.Name = "ScottPCM";
+            this.ScottPCM.Size = new Size(775, 346);
+            this.ScottPCM.TabIndex = 3;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(800, 423);
+            Controls.Add(this.ScottPCM);
             Controls.Add(btnStart);
             Controls.Add(comboBox1);
             Controls.Add(pbVolume);
@@ -76,5 +93,7 @@
         private ProgressBar pbVolume;
         private ComboBox comboBox1;
         private Button btnStart;
+        private System.Windows.Forms.Timer timerUpdateGraph;
+        private ScottPlot.FormsPlot ScottPCM;
     }
 }
