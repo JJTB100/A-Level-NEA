@@ -132,7 +132,7 @@ namespace PianoChordsGame
 
             for(int i = 0; i < fftReal.Length; i++)
             {
-                if (fftRealDB[i] > -5 && i > 10)
+                if (fftRealDB[i] > 0 && i > 10)
                 {
                     int frequency = (i * RATE) / graphPointCount;
                     Console.WriteLine(frequency);
