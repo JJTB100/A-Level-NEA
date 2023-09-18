@@ -33,7 +33,7 @@
             comboBox1 = new ComboBox();
             btnStart = new Button();
             timerUpdateGraph = new System.Windows.Forms.Timer(components);
-            this.ScottPCM = new ScottPlot.FormsPlot();
+            ScottPCM = new ScottPlot.FormsPlot();
             SuspendLayout();
             // 
             // pbVolume
@@ -63,23 +63,23 @@
             // 
             // timerUpdateGraph
             // 
-            timerUpdateGraph.Interval = 10;
+            timerUpdateGraph.Interval = 1;
             timerUpdateGraph.Tick += timerUpdateGraph_Tick;
             // 
             // ScottPCM
             // 
-            this.ScottPCM.Location = new Point(12, 65);
-            this.ScottPCM.Margin = new Padding(4, 3, 4, 3);
-            this.ScottPCM.Name = "ScottPCM";
-            this.ScottPCM.Size = new Size(775, 346);
-            this.ScottPCM.TabIndex = 3;
+            ScottPCM.Location = new Point(12, 65);
+            ScottPCM.Margin = new Padding(4, 3, 4, 3);
+            ScottPCM.Name = "ScottPCM";
+            ScottPCM.Size = new Size(775, 346);
+            ScottPCM.TabIndex = 3;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 423);
-            Controls.Add(this.ScottPCM);
+            Controls.Add(ScottPCM);
             Controls.Add(btnStart);
             Controls.Add(comboBox1);
             Controls.Add(pbVolume);
