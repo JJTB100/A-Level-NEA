@@ -1,4 +1,6 @@
+using Accord.Math;
 using NAudio.Wave;
+using ScottPlot;
 
 namespace PianoChordsGame
 {
@@ -8,7 +10,6 @@ namespace PianoChordsGame
         public BufferedWaveProvider bwp;
         private int RATE = 44100;
         private int BUFFERSIZE = (int)Math.Pow(2, 13);
-
         public Form1()
         {
             InitializeComponent();
@@ -24,6 +25,7 @@ namespace PianoChordsGame
                 DeviceNumber = comboBox1.SelectedIndex - 1,
                 WaveFormat = new WaveFormat(RATE, 1)
             };
+            bwp = new BufferedWaveProvider(waveIn.WaveFormat);
             SetupGraphLabels();
         }
 
@@ -32,7 +34,7 @@ namespace PianoChordsGame
         {
             //start sound buffer
             waveIn.DataAvailable += new EventHandler<WaveInEventArgs>(waveIn_DataAvailable);
-            bwp = new BufferedWaveProvider(waveIn.WaveFormat);
+
             bwp.BufferLength = BUFFERSIZE * 2;
 
             bwp.DiscardOnBufferOverflow = true;
@@ -40,6 +42,17 @@ namespace PianoChordsGame
             btnStart.Enabled = false;
             timerUpdateGraph.Start();
 
+
+
+        }
+        private string WhatNoteAmI(double frequency)
+        {
+            double MIDInum = 12 * Math.Log2((double)frequency / (double)440) + 69;
+            int MIDInumRounded = (int)Math.Round(MIDInum);
+            string[] notes = { "A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab" };
+            string note = notes[((MIDInumRounded-21) % 12)];
+            lblNotesPlayed.Text = note;
+            return note;
         }
 
         private void waveIn_DataAvailable(object? sender, WaveInEventArgs e)
@@ -50,7 +63,6 @@ namespace PianoChordsGame
 
         private void timerUpdateGraph_Tick(object sender, EventArgs e)
         {
-            Console.WriteLine("TICK");
             //read bytes from bwp into frames
             int frameSize = BUFFERSIZE;
             var frames = new byte[frameSize];
@@ -69,8 +81,9 @@ namespace PianoChordsGame
             // create a (32-bit) int array ready to fill with the 16-bit data
             int graphPointCount = frames.Length / BYTES_PER_POINT;
 
-            // create double array to hold the data we will graph
+            // create double array to hold the data to graph
             double[] pcm = new double[graphPointCount];
+            double[] fftReal = new double[graphPointCount / 2];
 
             // populate Xs and Ys with double data
             for (int i = 0; i < graphPointCount; i++)
@@ -86,14 +99,46 @@ namespace PianoChordsGame
             // determine horizontal axis units for graph
             double pcmPointSpacingMs = RATE / 1000;
 
+            //get fft values
+            var fft = FFT(pcm);
+            double fftMaxFreq = RATE / 2;
+            double fftPointSpacingHz = fftMaxFreq / graphPointCount;
+            Array.Copy(fft, fftReal, fftReal.Length);
+
+
+            double[] fftRealDB = new double[fftReal.Length];
+
+            int a = 0;
+            foreach (var f in fftReal)
+            {
+                var y = (Math.Log10(f) * 10);
+                fftRealDB[a] = y;
+                a++;
+            }
+
             // plot the Xs and Ys for both graphs
             ScottPCM.Plot.Clear();
+            ScottFFT.Plot.Clear();
             ScottPCM.Plot.AddSignal(pcm, pcmPointSpacingMs);
-            ScottPCM.Plot.AxisAuto();
+            ScottFFT.Plot.AddSignal(fftRealDB, fftPointSpacingHz);
+            ScottFFT.Plot.SetAxisLimits(0, 400, -50, 5);
+            ScottPCM.Plot.SetAxisLimits(0, 100, -1, 1);
+
             ScottPCM.Refresh();
+            ScottFFT.Refresh();
 
             //re-enable timer
             timerUpdateGraph.Enabled = true;
+
+            for(int i = 0; i < fftReal.Length; i++)
+            {
+                if (fftRealDB[i] > -5 && i > 10)
+                {
+                    int frequency = (i * RATE) / graphPointCount;
+                    Console.WriteLine(frequency);
+                    WhatNoteAmI(frequency);
+                }
+            }
 
 
             Application.DoEvents();
@@ -104,7 +149,23 @@ namespace PianoChordsGame
             ScottPCM.Plot.Title("Microphone PCM Data");
             ScottPCM.Plot.YLabel("Amplitude (PCM)");
             ScottPCM.Plot.XLabel("Time (ms)");
+            ScottFFT.Plot.Title("Microphone FFT Data");
+            ScottFFT.Plot.YLabel("Power (raw)");
+            ScottFFT.Plot.XLabel("Frequency (Hz)");
+            ScottFFT.Plot.SetAxisLimits(0, 1000, 0, 10);
         }
+        public double[] FFT(double[] data)
+        {
+            double[] fft = new double[data.Length];
+            System.Numerics.Complex[] fftComplex = new System.Numerics.Complex[data.Length];
+            for (int i = 0; i < data.Length; i++)
+                fftComplex[i] = new System.Numerics.Complex(data[i], 0.0);
+            Accord.Math.FourierTransform.FFT(fftComplex, Accord.Math.FourierTransform.Direction.Forward);
+            for (int i = 0; i < data.Length; i++)
+                fft[i] = fftComplex[i].Magnitude;
+            return fft;
+        }
+
     }
 
 }

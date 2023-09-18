@@ -34,6 +34,8 @@
             btnStart = new Button();
             timerUpdateGraph = new System.Windows.Forms.Timer(components);
             ScottPCM = new ScottPlot.FormsPlot();
+            ScottFFT = new ScottPlot.FormsPlot();
+            lblNotesPlayed = new Label();
             SuspendLayout();
             // 
             // pbVolume
@@ -71,14 +73,33 @@
             ScottPCM.Location = new Point(12, 65);
             ScottPCM.Margin = new Padding(4, 3, 4, 3);
             ScottPCM.Name = "ScottPCM";
-            ScottPCM.Size = new Size(775, 346);
+            ScottPCM.Size = new Size(696, 269);
             ScottPCM.TabIndex = 3;
+            // 
+            // ScottFFT
+            // 
+            ScottFFT.Location = new Point(13, 353);
+            ScottFFT.Margin = new Padding(4, 3, 4, 3);
+            ScottFFT.Name = "ScottFFT";
+            ScottFFT.Size = new Size(696, 269);
+            ScottFFT.TabIndex = 3;
+            // 
+            // lblNotesPlayed
+            // 
+            lblNotesPlayed.AutoSize = true;
+            lblNotesPlayed.Location = new Point(799, 90);
+            lblNotesPlayed.Name = "lblNotesPlayed";
+            lblNotesPlayed.Size = new Size(38, 15);
+            lblNotesPlayed.TabIndex = 4;
+            lblNotesPlayed.Text = "label1";
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 423);
+            ClientSize = new Size(921, 707);
+            Controls.Add(lblNotesPlayed);
+            Controls.Add(ScottFFT);
             Controls.Add(ScottPCM);
             Controls.Add(btnStart);
             Controls.Add(comboBox1);
@@ -86,6 +107,7 @@
             Name = "Form1";
             Text = "Form1";
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -95,5 +117,7 @@
         private Button btnStart;
         private System.Windows.Forms.Timer timerUpdateGraph;
         private ScottPlot.FormsPlot ScottPCM;
+        private ScottPlot.FormsPlot ScottFFT;
+        private Label lblNotesPlayed;
     }
 }
