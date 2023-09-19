@@ -122,7 +122,7 @@ namespace PianoChordsGame
             ScottPCM.Plot.AddSignal(pcm, pcmPointSpacingMs);
             ScottFFT.Plot.AddSignal(fftRealDB, fftPointSpacingHz);
             ScottFFT.Plot.SetAxisLimits(0, 400, -50, 5);
-            ScottPCM.Plot.SetAxisLimits(0, 100, -1, 1);
+            ScottPCM.Plot.SetAxisLimits(0, 100, -10, 10);
 
             ScottPCM.Refresh();
             ScottFFT.Refresh();
