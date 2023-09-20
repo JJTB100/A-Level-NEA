@@ -6,10 +6,7 @@ namespace PianoChordsGame
 {
     public partial class Form1 : Form
     {
-        public WaveIn waveIn;
-        public BufferedWaveProvider bwp;
-        private int RATE = 44100;
-        private int BUFFERSIZE = (int)Math.Pow(2, 13);
+        NoteListener Listener;
         public Form1()
         {
             InitializeComponent();
@@ -19,67 +16,29 @@ namespace PianoChordsGame
                 comboBox1.Items.Add($"{i}: {caps.ProductName}");
             }
             comboBox1.SelectedIndex = 1;
-            //initialise WaveIn class
-            waveIn = new WaveIn
-            {
-                DeviceNumber = comboBox1.SelectedIndex - 1,
-                WaveFormat = new WaveFormat(RATE, 1)
-            };
-            bwp = new BufferedWaveProvider(waveIn.WaveFormat);
+
+            Listener = new NoteListener(44100, (int)Math.Pow(2, 13));
+
             SetupGraphLabels();
+
         }
 
 
         private void btnStart_Click(object sender, EventArgs e)
         {
             //start sound buffer
-            waveIn.DataAvailable += new EventHandler<WaveInEventArgs>(waveIn_DataAvailable);
+            Listener.StartListening();
 
-            bwp.BufferLength = BUFFERSIZE * 2;
-
-            bwp.DiscardOnBufferOverflow = true;
-            waveIn.StartRecording();
             btnStart.Enabled = false;
+
             timerUpdateGraph.Start();
-
-
-
-        }
-        private string WhatNoteAmI(double frequency)
-        {
-            double MIDInum = 12 * Math.Log2((double)frequency / (double)440) + 69;
-            int MIDInumRounded = (int)Math.Round(MIDInum);
-            string[] notes = { "A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab" };
-            string note = notes[((MIDInumRounded-21) % 12)];
-            lblNotesPlayed.Text = note;
-            return note;
-        }
-
-        private void waveIn_DataAvailable(object? sender, WaveInEventArgs e)
-        {
-            //Add data to buffer
-            bwp.AddSamples(e.Buffer, 0, e.BytesRecorded);
         }
 
         private void timerUpdateGraph_Tick(object sender, EventArgs e)
         {
-            //read bytes from bwp into frames
-            int frameSize = BUFFERSIZE;
-            var frames = new byte[frameSize];
-            bwp.Read(frames, 0, frameSize);
-
-            //check that the buffer isn't empty
-            if (frames.Length == 0) return;
-            if (frames[frameSize - 2] == 0) return;
-
             timerUpdateGraph.Enabled = false; //disable timer whilst maths happens
 
-            //pull PCM values from the buffer
-            // incoming data is 16-bit (2 bytes per audio point)
-            int BYTES_PER_POINT = 2;
-
-            // create a (32-bit) int array ready to fill with the 16-bit data
-            int graphPointCount = frames.Length / BYTES_PER_POINT;
+            //HERE
 
             // create double array to hold the data to graph
             double[] pcm = new double[graphPointCount];
