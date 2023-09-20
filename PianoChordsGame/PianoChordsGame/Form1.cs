@@ -1,12 +1,15 @@
 using Accord.Math;
 using NAudio.Wave;
 using ScottPlot;
+using ScottPlot.MarkerShapes;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PianoChordsGame
 {
     public partial class Form1 : Form
     {
         NoteListener Listener;
+        List<string> notesPlayed;
         public Form1()
         {
             InitializeComponent();
@@ -17,10 +20,10 @@ namespace PianoChordsGame
             }
             comboBox1.SelectedIndex = 1;
 
-            Listener = new NoteListener(44100, (int)Math.Pow(2, 13));
+            Listener = new NoteListener((int)Math.Pow(2, 13));
 
             SetupGraphLabels();
-
+            notesPlayed = new List<string>();
         }
 
 
@@ -36,69 +39,26 @@ namespace PianoChordsGame
 
         private void timerUpdateGraph_Tick(object sender, EventArgs e)
         {
+
             timerUpdateGraph.Enabled = false; //disable timer whilst maths happens
 
-            //HERE
-
-            // create double array to hold the data to graph
-            double[] pcm = new double[graphPointCount];
-            double[] fftReal = new double[graphPointCount / 2];
-
-            // populate Xs and Ys with double data
-            for (int i = 0; i < graphPointCount; i++)
+            notesPlayed = Listener.ProcessData(ScottFFT, ScottPCM);
+            string notesDisplay;
+            if (notesPlayed != null && notesPlayed.Count != 0)
             {
-                // read the int16 from the two bytes
-                var val = BitConverter.ToInt16(frames, i * 2);
+                notesDisplay = "";
+                foreach (string note in notesPlayed)
+                {
+                    notesDisplay += note + ", ";
+                }
 
-                // store the value in Ys as a percent (+/- 100% = 200%)
-                pcm[i] = (double)(val) / Math.Pow(2, 16) * 200.0;
+                lblNotesPlayed.Text = notesDisplay;
 
+                Console.WriteLine(notesDisplay);
             }
-
-            // determine horizontal axis units for graph
-            double pcmPointSpacingMs = RATE / 1000;
-
-            //get fft values
-            var fft = FFT(pcm);
-            double fftMaxFreq = RATE / 2;
-            double fftPointSpacingHz = fftMaxFreq / graphPointCount;
-            Array.Copy(fft, fftReal, fftReal.Length);
-
-
-            double[] fftRealDB = new double[fftReal.Length];
-
-            int a = 0;
-            foreach (var f in fftReal)
-            {
-                var y = (Math.Log10(f) * 10);
-                fftRealDB[a] = y;
-                a++;
-            }
-
-            // plot the Xs and Ys for both graphs
-            ScottPCM.Plot.Clear();
-            ScottFFT.Plot.Clear();
-            ScottPCM.Plot.AddSignal(pcm, pcmPointSpacingMs);
-            ScottFFT.Plot.AddSignal(fftRealDB, fftPointSpacingHz);
-            ScottFFT.Plot.SetAxisLimits(0, 400, -50, 5);
-            ScottPCM.Plot.SetAxisLimits(0, 100, -10, 10);
-
-            ScottPCM.Refresh();
-            ScottFFT.Refresh();
 
             //re-enable timer
             timerUpdateGraph.Enabled = true;
-
-            for(int i = 0; i < fftReal.Length; i++)
-            {
-                if (fftRealDB[i] > 0 && i > 10)
-                {
-                    int frequency = (i * RATE) / graphPointCount;
-                    Console.WriteLine(frequency);
-                    WhatNoteAmI(frequency);
-                }
-            }
-
 
             Application.DoEvents();
 
@@ -113,17 +73,7 @@ namespace PianoChordsGame
             ScottFFT.Plot.XLabel("Frequency (Hz)");
             ScottFFT.Plot.SetAxisLimits(0, 1000, 0, 10);
         }
-        public double[] FFT(double[] data)
-        {
-            double[] fft = new double[data.Length];
-            System.Numerics.Complex[] fftComplex = new System.Numerics.Complex[data.Length];
-            for (int i = 0; i < data.Length; i++)
-                fftComplex[i] = new System.Numerics.Complex(data[i], 0.0);
-            Accord.Math.FourierTransform.FFT(fftComplex, Accord.Math.FourierTransform.Direction.Forward);
-            for (int i = 0; i < data.Length; i++)
-                fft[i] = fftComplex[i].Magnitude;
-            return fft;
-        }
+
 
     }
 
