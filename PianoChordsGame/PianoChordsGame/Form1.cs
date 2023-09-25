@@ -70,8 +70,7 @@ namespace PianoChordsGame
             ScottPCM.Plot.XLabel("Time (ms)");
             ScottFFT.Plot.Title("Microphone FFT Data");
             ScottFFT.Plot.YLabel("Power (raw)");
-            ScottFFT.Plot.XLabel("Frequency (Hz)");
-            ScottFFT.Plot.SetAxisLimits(0, 1000, 0, 10);
+            ScottFFT.Plot.XLabel("Frequency (KHz)");
         }
 
 
