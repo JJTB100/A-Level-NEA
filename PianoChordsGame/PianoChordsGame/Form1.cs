@@ -36,7 +36,7 @@ namespace PianoChordsGame
 
             timerUpdateGraph.Start();
         }
-
+        
         private void timerUpdateGraph_Tick(object sender, EventArgs e)
         {
 
