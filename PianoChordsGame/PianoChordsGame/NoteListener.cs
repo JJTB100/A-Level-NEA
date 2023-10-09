@@ -91,17 +91,16 @@ namespace PianoChordsGame
         public double[] CalculatePCMValues(byte[] frames, int PointCount)
         {
 
-            // create double arrays to hold the data
+           
             double[] pcm = new double[PointCount];
 
-            // populate Xs and Ys with double data
             for (int i = 0; i < PointCount; i++)
             {
                 // read the int16 from the two bytes
                 var val = BitConverter.ToInt16(frames, i * 2);
 
-                // store the value in Ys as a percent (+/- 100% = 200%)
-                pcm[i] = (double)(val) / Math.Pow(2, 16) * 200.0;
+                // store the value in Ys as a percent
+                pcm[i] = (double)(val) / Math.Pow(2, 16) * 100.0;
 
             }
 
