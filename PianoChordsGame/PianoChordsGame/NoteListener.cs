@@ -114,6 +114,10 @@ namespace PianoChordsGame
             //get fft values
             var fft = FFT(pcm);
             Array.Copy(fft, fftReal, fftReal.Length);
+            foreach(double item in fftReal)
+            {
+                Console.WriteLine(item);
+            }
             return fftReal;
         }
         public double[] FFT(double[] data)
