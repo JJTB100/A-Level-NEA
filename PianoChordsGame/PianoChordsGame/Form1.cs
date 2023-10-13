@@ -6,6 +6,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PianoChordsGame
 {
+
     public partial class Form1 : Form
     {
         NoteListener Listener;
@@ -26,7 +27,17 @@ namespace PianoChordsGame
             notesPlayed = new List<string>();
         }
 
-
+        public void Li_PlotNew(object self, double[][] data)
+        {
+            ScottPCM.Plot.Clear();
+            ScottFFT.Plot.Clear();
+            ScottPCM.Plot.AddSignal(data[0], data[2][0]);
+            ScottFFT.Plot.AddSignal(data[1], data[3][0]);
+            ScottFFT.Plot.SetAxisLimits(0, 200, -50, 5);
+            ScottPCM.Plot.SetAxisLimits(0, 100, -10, 10);
+            ScottPCM.Refresh();
+            ScottFFT.Refresh();
+        }
         private void btnStart_Click(object sender, EventArgs e)
         {
             //start sound buffer
@@ -36,13 +47,16 @@ namespace PianoChordsGame
 
             timerUpdateGraph.Start();
         }
-        
+
         private void timerUpdateGraph_Tick(object sender, EventArgs e)
         {
 
             timerUpdateGraph.Enabled = false; //disable timer whilst maths happens
 
+            Listener.Plotting += Li_PlotNew;
+
             notesPlayed = Listener.ProcessData(ScottFFT, ScottPCM);
+
             string notesDisplay;
             if (notesPlayed != null && notesPlayed.Count != 0)
             {
@@ -53,8 +67,6 @@ namespace PianoChordsGame
                 }
 
                 lblNotesPlayed.Text = notesDisplay;
-
-                Console.WriteLine(notesDisplay);
             }
 
             //re-enable timer

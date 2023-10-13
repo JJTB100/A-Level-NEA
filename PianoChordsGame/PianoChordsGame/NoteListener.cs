@@ -1,4 +1,5 @@
 ﻿using NAudio.Wave;
+using ScottPlot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PianoChordsGame
 {
-    internal class NoteListener
+    public class NoteListener
     {
         public WaveIn waveIn;
         public BufferedWaveProvider bwp;
@@ -50,8 +51,11 @@ namespace PianoChordsGame
             string note = notes[((MIDInumRounded - 21) % 12)];
             return note;
         }
+        public event EventHandler<double[][]> Plotting;
+
         public List<string> ProcessData(ScottPlot.FormsPlot ScottFFT, ScottPlot.FormsPlot ScottPCM)
         {
+
             //read bytes from bwp into frames
             int frameSize = BUFFERSIZE;
             var frames = new byte[frameSize];
@@ -76,16 +80,14 @@ namespace PianoChordsGame
             double pcmPointSpacingMs = RATE / 1000;
             double fftPointSpacingHz = fftMaxFreq / PointCount;
 
-            ScottPCM.Plot.Clear();
-            ScottFFT.Plot.Clear();
-            ScottPCM.Plot.AddSignal(pcm, pcmPointSpacingMs);
-            ScottFFT.Plot.AddSignal(fftDb, fftPointSpacingHz);
-            ScottFFT.Plot.SetAxisLimits(0, 200, -50, 5);
-            ScottPCM.Plot.SetAxisLimits(0, 100, -10, 10);
-            ScottPCM.Refresh();
-            ScottFFT.Refresh();
+            double[][] eventData = {pcm, fftDb, new[] {pcmPointSpacingMs}, new[] { fftPointSpacingHz } };
+            OnPlotNew(eventData);
 
             return PullNotes(fftDb, PointCount);
+        }
+        protected virtual void OnPlotNew(double[][] data)
+        {
+            Plotting?.Invoke(this, data);
         }
 
         public double[] CalculatePCMValues(byte[] frames, int PointCount)
@@ -114,10 +116,6 @@ namespace PianoChordsGame
             //get fft values
             var fft = FFT(pcm);
             Array.Copy(fft, fftReal, fftReal.Length);
-            foreach(double item in fftReal)
-            {
-                Console.WriteLine(item);
-            }
             return fftReal;
         }
         public double[] FFT(double[] data)

@@ -65,7 +65,7 @@
             // 
             // timerUpdateGraph
             // 
-            timerUpdateGraph.Interval = 1;
+            timerUpdateGraph.Interval = 10;
             timerUpdateGraph.Tick += timerUpdateGraph_Tick;
             // 
             // ScottPCM
