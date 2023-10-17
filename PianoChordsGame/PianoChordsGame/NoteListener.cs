@@ -53,7 +53,7 @@ namespace PianoChordsGame
         }
         public event EventHandler<double[][]> Plotting;
 
-        public List<string> ProcessData(ScottPlot.FormsPlot ScottFFT, ScottPlot.FormsPlot ScottPCM)
+        public List<string> ProcessData()
         {
 
             //read bytes from bwp into frames
@@ -65,7 +65,6 @@ namespace PianoChordsGame
             if (frames.Length == 0) return null;
             if (frames[frameSize - 2] == 0) return null;
 
-          
             //pull PCM values from the buffer
             // incoming data is 16-bit (2 bytes per audio point)
             int BYTES_PER_POINT = 2;

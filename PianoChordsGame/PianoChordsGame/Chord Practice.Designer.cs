@@ -33,14 +33,14 @@
             comboBox1 = new ComboBox();
             btnStart = new Button();
             timerUpdateGraph = new System.Windows.Forms.Timer(components);
-            ScottPCM = new ScottPlot.FormsPlot();
             ScottFFT = new ScottPlot.FormsPlot();
             lblNotesPlayed = new Label();
+            btnHelp = new Button();
             SuspendLayout();
             // 
             // pbVolume
             // 
-            pbVolume.Location = new Point(522, 12);
+            pbVolume.Location = new Point(643, 12);
             pbVolume.Name = "pbVolume";
             pbVolume.Size = new Size(266, 23);
             pbVolume.TabIndex = 0;
@@ -68,20 +68,12 @@
             timerUpdateGraph.Interval = 10;
             timerUpdateGraph.Tick += timerUpdateGraph_Tick;
             // 
-            // ScottPCM
-            // 
-            ScottPCM.Location = new Point(12, 65);
-            ScottPCM.Margin = new Padding(4, 3, 4, 3);
-            ScottPCM.Name = "ScottPCM";
-            ScottPCM.Size = new Size(696, 269);
-            ScottPCM.TabIndex = 3;
-            // 
             // ScottFFT
             // 
-            ScottFFT.Location = new Point(13, 353);
+            ScottFFT.Location = new Point(13, 55);
             ScottFFT.Margin = new Padding(4, 3, 4, 3);
             ScottFFT.Name = "ScottFFT";
-            ScottFFT.Size = new Size(696, 269);
+            ScottFFT.Size = new Size(312, 127);
             ScottFFT.TabIndex = 3;
             // 
             // lblNotesPlayed
@@ -93,14 +85,23 @@
             lblNotesPlayed.TabIndex = 4;
             lblNotesPlayed.Text = "label1";
             // 
+            // btnHelp
+            // 
+            btnHelp.Location = new Point(737, 482);
+            btnHelp.Name = "btnHelp";
+            btnHelp.Size = new Size(75, 23);
+            btnHelp.TabIndex = 5;
+            btnHelp.Text = "Help";
+            btnHelp.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(921, 707);
+            ClientSize = new Size(921, 517);
+            Controls.Add(btnHelp);
             Controls.Add(lblNotesPlayed);
             Controls.Add(ScottFFT);
-            Controls.Add(ScottPCM);
             Controls.Add(btnStart);
             Controls.Add(comboBox1);
             Controls.Add(pbVolume);
@@ -116,8 +117,8 @@
         private ComboBox comboBox1;
         private Button btnStart;
         private System.Windows.Forms.Timer timerUpdateGraph;
-        private ScottPlot.FormsPlot ScottPCM;
         private ScottPlot.FormsPlot ScottFFT;
         private Label lblNotesPlayed;
+        private Button btnHelp;
     }
 }

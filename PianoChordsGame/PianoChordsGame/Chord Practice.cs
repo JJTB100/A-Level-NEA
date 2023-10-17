@@ -29,13 +29,9 @@ namespace PianoChordsGame
 
         public void Li_PlotNew(object self, double[][] data)
         {
-            ScottPCM.Plot.Clear();
             ScottFFT.Plot.Clear();
-            ScottPCM.Plot.AddSignal(data[0], data[2][0]);
             ScottFFT.Plot.AddSignal(data[1], data[3][0]);
             ScottFFT.Plot.SetAxisLimits(0, 200, -50, 5);
-            ScottPCM.Plot.SetAxisLimits(0, 100, -10, 10);
-            ScottPCM.Refresh();
             ScottFFT.Refresh();
         }
         private void btnStart_Click(object sender, EventArgs e)
@@ -55,7 +51,7 @@ namespace PianoChordsGame
 
             Listener.Plotting += Li_PlotNew;
 
-            notesPlayed = Listener.ProcessData(ScottFFT, ScottPCM);
+            notesPlayed = Listener.ProcessData();
 
             string notesDisplay;
             if (notesPlayed != null && notesPlayed.Count != 0)
@@ -77,14 +73,10 @@ namespace PianoChordsGame
         }
         public void SetupGraphLabels()
         {
-            ScottPCM.Plot.Title("Microphone PCM Data");
-            ScottPCM.Plot.YLabel("Amplitude (PCM)");
-            ScottPCM.Plot.XLabel("Time (ms)");
             ScottFFT.Plot.Title("Microphone FFT Data");
             ScottFFT.Plot.YLabel("Power (raw)");
             ScottFFT.Plot.XLabel("Frequency (KHz)");
         }
-
 
     }
 
