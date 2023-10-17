@@ -10,10 +10,22 @@
 
   <ItemGroup>
     <PackageReference Include="Accord.Math" Version="3.8.0" />
+    <PackageReference Include="Manufaktura.Controls" Version="1.4.2" />
+    <PackageReference Include="Manufaktura.Controls.AspNetCore" Version="1.0.0" />
+    <PackageReference Include="Manufaktura.Controls.SMuFL" Version="1.2.2" />
+    <PackageReference Include="Manufaktura.Core" Version="1.0.2" />
+    <PackageReference Include="Manufaktura.Core.Serialization" Version="1.0.0" />
+    <PackageReference Include="Manufaktura.Music" Version="1.1.3" />
     <PackageReference Include="NAudio" Version="2.2.1" />
     <PackageReference Include="NAudio.WinForms" Version="2.2.1" />
-    <PackageReference Include="ScottPlot" Version="4.1.67" />
-    <PackageReference Include="ScottPlot.WinForms" Version="4.1.67" />
+    <PackageReference Include="ScottPlot" Version="4.1.68" />
+    <PackageReference Include="ScottPlot.WinForms" Version="4.1.68" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Manufaktura.Controls.WinForms">
+      <HintPath>Manufaktura.Controls.WinForms.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

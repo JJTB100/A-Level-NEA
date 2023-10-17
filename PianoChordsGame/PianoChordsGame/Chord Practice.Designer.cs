@@ -1,4 +1,6 @@
-﻿namespace PianoChordsGame
+﻿using Manufaktura.Controls.Model;
+
+namespace PianoChordsGame
 {
     partial class Form1
     {
@@ -37,6 +39,8 @@
             lblNotesPlayed = new Label();
             btnHelp = new Button();
             SuspendLayout();
+
+            
             // 
             // pbVolume
             // 
