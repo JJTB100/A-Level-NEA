@@ -1,6 +1,4 @@
-﻿using Manufaktura.Controls.Model;
-
-namespace PianoChordsGame
+﻿namespace PianoChordsGame
 {
     partial class Form1
     {

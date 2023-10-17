@@ -3,6 +3,10 @@ using NAudio.Wave;
 using ScottPlot;
 using ScottPlot.MarkerShapes;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Manufaktura.Controls;
+using Manufaktura.Controls.Model;
+using Manufaktura.Music.Model.MajorAndMinor;
+using Manufaktura.Music.Model;
 
 namespace PianoChordsGame
 {
@@ -24,7 +28,9 @@ namespace PianoChordsGame
             Listener = new NoteListener((int)Math.Pow(2, 13));
 
             SetupGraphLabels();
+
             notesPlayed = new List<string>();
+
         }
 
         public void Li_PlotNew(object self, double[][] data)

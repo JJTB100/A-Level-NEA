@@ -12,7 +12,7 @@ namespace PianoChordsGame
         //Load Progress
         //Import chord packs
         //new chord
-
+        //current chord
 
     }
 }
