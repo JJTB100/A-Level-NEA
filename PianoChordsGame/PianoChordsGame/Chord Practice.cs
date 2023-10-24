@@ -10,9 +10,9 @@ using Manufaktura.Music.Model;
 
 namespace PianoChordsGame
 {
-
     public partial class Form1 : Form
     {
+        Chord C = new Chord(3, "C", "E", "G");
         NoteListener Listener;
         List<string> notesPlayed;
         public Form1()
@@ -48,8 +48,13 @@ namespace PianoChordsGame
             btnStart.Enabled = false;
 
             timerUpdateGraph.Start();
+
+            displayChordPattern(C);
         }
 
+        private void displayChordPattern(Chord chord)
+        {
+        }
         private void timerUpdateGraph_Tick(object sender, EventArgs e)
         {
 
