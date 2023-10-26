@@ -7,5 +7,9 @@ namespace Chordo
             InitializeComponent();
         }
 
+        private void btnToggleMusic_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
