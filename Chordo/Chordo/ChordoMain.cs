@@ -11,5 +11,17 @@ namespace Chordo
         {
 
         }
+
+        private void pbFullHeart_Click(object sender, EventArgs e)
+        {
+            pbFullHeart.Visible = false;
+            pbEmptyHeart.Visible = true;
+        }
+
+        private void pbEmptyHeart_Click(object sender, EventArgs e)
+        {
+            pbFullHeart.Visible = true;
+            pbEmptyHeart.Visible = false;
+        }
     }
 }
