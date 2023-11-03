@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Pipes;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -46,8 +47,18 @@ namespace Chordo
                 {
                     CD.AddNote(match.Groups[i+3].Value);
                 }
+                pack.AddChord(CD);
             }
+            
             return pack;
+        }
+        public Chord NextChord()
+        {
+            //Algroithm
+            Random r = new Random();
+            int num = r.Next(0, 3);
+            Console.WriteLine(packs[index: 0]);
+            return packs[0].GetChords()[num];
         }
     }
 }

@@ -14,12 +14,31 @@ namespace Chordo
         public ChordPack(string pName, List<Chord> pChords)
         {
             name = pName;
-            chords = pChords;
+            if (pChords != null)
+            {
+                chords = pChords;
+            }
+            else
+            {
+                chords = new List<Chord>();
+            }
+
         }
 
         internal void AddChord(Chord chord)
         {
             chords.Add(chord);
+        }
+
+        public List<Chord> GetChords()
+        {
+            return chords;
+        }
+
+        public override string ToString()
+        {
+            string send = $"Chord Pack, '{name}', has {chords.Count} Chords in it";
+            return send;
         }
     }
 }

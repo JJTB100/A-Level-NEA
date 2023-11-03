@@ -2,11 +2,12 @@ namespace Chordo
 {
     public partial class ChordoMain : Form
     {
+        RevisionEngine Rev;
+
         public ChordoMain()
         {
             InitializeComponent();
-
-            RevisionEngine Rev = new RevisionEngine();
+            Rev = new RevisionEngine();
         }
 
         private void pbFullHeart_Click(object sender, EventArgs e)
@@ -25,6 +26,8 @@ namespace Chordo
         {
             //Display Chord
             //Get new chord from engine
+            Chord next = Rev.NextChord();
+            lblChord.Text = next.name.ToString();
             //Display chord name
         }
     }

@@ -10,8 +10,8 @@ namespace Chordo
     {
         List<string> notes;
         int score;
-        string name;
-        public Chord(string pName, int numNotes, string note1, string note2 = null, string note3 = null, string note4 = null, string note5 = null)
+        public string name;
+        public Chord(string pName, int numNotes, string note1=null, string note2 = null, string note3 = null, string note4 = null, string note5 = null)
         {
             notes = new List<string>();
             AddNote(note1);
