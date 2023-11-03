@@ -31,7 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ChordoMain));
             tblLayout = new TableLayoutPanel();
             lblTitle = new Label();
-            btnExit = new Button();
+            btnStartStop = new Button();
             btnToggleMusic = new Button();
             lblTimer = new Label();
             lblChord = new Label();
@@ -57,7 +57,7 @@
             tblLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 9.322974F));
             tblLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 9.766926F));
             tblLayout.Controls.Add(lblTitle, 2, 0);
-            tblLayout.Controls.Add(btnExit, 3, 0);
+            tblLayout.Controls.Add(btnStartStop, 3, 0);
             tblLayout.Controls.Add(btnToggleMusic, 0, 2);
             tblLayout.Controls.Add(lblTimer, 0, 0);
             tblLayout.Controls.Add(lblChord, 2, 1);
@@ -87,17 +87,18 @@
             lblTitle.TabIndex = 0;
             lblTitle.Text = "Chordo";
             // 
-            // btnExit
+            // btnStartStop
             // 
-            btnExit.AutoSize = true;
-            tblLayout.SetColumnSpan(btnExit, 2);
-            btnExit.Dock = DockStyle.Fill;
-            btnExit.Location = new Point(732, 3);
-            btnExit.Name = "btnExit";
-            btnExit.Size = new Size(166, 56);
-            btnExit.TabIndex = 1;
-            btnExit.Text = "Exit";
-            btnExit.UseVisualStyleBackColor = true;
+            btnStartStop.AutoSize = true;
+            tblLayout.SetColumnSpan(btnStartStop, 2);
+            btnStartStop.Dock = DockStyle.Fill;
+            btnStartStop.Location = new Point(732, 3);
+            btnStartStop.Name = "btnStartStop";
+            btnStartStop.Size = new Size(166, 56);
+            btnStartStop.TabIndex = 1;
+            btnStartStop.Text = "Start";
+            btnStartStop.UseVisualStyleBackColor = true;
+            btnStartStop.Click += btnStartStop_Click;
             // 
             // btnToggleMusic
             // 
@@ -112,7 +113,6 @@
             btnToggleMusic.TabIndex = 4;
             btnToggleMusic.TextAlign = ContentAlignment.BottomCenter;
             btnToggleMusic.UseVisualStyleBackColor = true;
-            btnToggleMusic.Click += btnToggleMusic_Click;
             // 
             // lblTimer
             // 
@@ -237,7 +237,7 @@
 
         private TableLayoutPanel tblLayout;
         private Label lblTitle;
-        private Button btnExit;
+        private Button btnStartStop;
         private Button button1;
         private Button button2;
         private Button btnToggleMusic;
