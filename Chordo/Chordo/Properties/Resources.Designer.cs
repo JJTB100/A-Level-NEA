@@ -59,5 +59,37 @@ namespace Chordo.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap GreenTick {
+            get {
+                object obj = ResourceManager.GetObject("GreenTick", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Major
+        ///C, 3, C, E, G;
+        ///A, 3, A, C#, E;
+        ///D, 3, D, F#, A;.
+        /// </summary>
+        internal static string MajorChordsPack {
+            get {
+                return ResourceManager.GetString("MajorChordsPack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap RedCross {
+            get {
+                object obj = ResourceManager.GetObject("RedCross", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

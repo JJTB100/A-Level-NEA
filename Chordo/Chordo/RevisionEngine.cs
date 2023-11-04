@@ -12,10 +12,10 @@ namespace Chordo
     internal class RevisionEngine
     {
         List<ChordPack> packs = new List<ChordPack>();
-
+        Chord currentChord;
         public RevisionEngine()
         {
-            packs.Add(loadChords("MajorChordsPack.txt"));
+            packs.Add(loadChords(@"MajorChordsPack.txt"));
             //packs.Add(new ChordPack("Major", ));
             
         }
@@ -31,7 +31,7 @@ namespace Chordo
             //Read Text from file
             string packText = File.ReadAllText(packAddress);
             MatchCollection matches = ScanChordsReg.Matches(packText);
-            ChordPack pack = new(File.ReadLines(packAddress).First(), null);
+            ChordPack pack = new(File.ReadLines(packAddress).First());
 
             //for each chord, match
             foreach (Match match in matches)
@@ -52,13 +52,38 @@ namespace Chordo
             
             return pack;
         }
+        private Chord prevChord;
         public Chord NextChord()
         {
-            //Algroithm
+            //make a list of possible chordsD
+            List<Chord> possibleChords = new List<Chord>();
+            possibleChords.AddRange(packs[0].GetChords());
+            //remove previous chord from list
+            if (possibleChords.Contains(prevChord))
+            {
+                possibleChords.Remove(prevChord);
+            }
+
+            //choose a chord
             Random r = new Random();
-            int num = r.Next(0, 3);
-            Console.WriteLine(packs[index: 0]);
-            return packs[0].GetChords()[num];
+            int num = r.Next(0, possibleChords.Count);
+            currentChord = possibleChords[num];
+            prevChord = currentChord;
+            return currentChord;
+            
+        }
+
+        internal bool CheckNotes(List<string> notesPlayed)
+        {
+            foreach(string note in currentChord.GetNotes())
+            {
+                //if not in notes
+                if (!notesPlayed.Contains(note))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

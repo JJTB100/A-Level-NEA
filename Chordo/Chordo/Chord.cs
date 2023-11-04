@@ -33,5 +33,10 @@ namespace Chordo
                 notes.Add(note);
             }
         }
+
+        internal IEnumerable<string> GetNotes()
+        {
+            return notes;
+        }
     }
 }

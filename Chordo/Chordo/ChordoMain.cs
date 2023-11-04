@@ -3,13 +3,26 @@ namespace Chordo
     public partial class ChordoMain : Form
     {
         RevisionEngine Rev;
-
+        Listener mic;
+        int time;
+        bool btnStartMode = true;
+        int streak = 0;
         public ChordoMain()
         {
             InitializeComponent();
             Rev = new RevisionEngine();
-        }
+            mic = new Listener();
 
+            ResetAll();
+
+        }
+        void ResetAll()
+        {
+            time = 60;
+            lblChord.Text = "Press Start to continue";
+            lblTimer.Text = "__";
+            NoScreen();
+        }
         private void pbFullHeart_Click(object sender, EventArgs e)
         {
             pbFullHeart.Visible = false;
@@ -24,11 +37,124 @@ namespace Chordo
 
         private void btnStartStop_Click(object sender, EventArgs e)
         {
-            //Display Chord
-            //Get new chord from engine
-            Chord next = Rev.NextChord();
-            lblChord.Text = next.name.ToString();
-            //Display chord name
+            if (btnStartMode)
+            {
+                
+                mic.StartListening();
+                NewQuestion();
+                btnStartStop.Text = "Exit";
+                btnStartMode = false;
+            }
+            else
+            {
+                //disable timers
+                ListenTick.Enabled = false;
+                CountdownTimer.Enabled = false;
+                //stop listening
+                mic.StopListening();
+                ResetAll();
+                btnStartStop.Text = "Start";
+                btnStartMode = true;
+
+            }
+
         }
+        
+        List<string> notesPlayed = new List<string>();
+
+        public int MAXNOTESBEFOREINCORRECT = 7;
+
+        private void ListenTick_Tick(object sender, EventArgs e)
+        {
+            //Listen for new chord on tick
+            //Disable tick
+            ListenTick.Enabled = false;
+            //Listen
+            List<string> notesFound = mic.ProcessData();
+            if (notesFound != null && notesFound.Count != 0)
+            {
+                foreach(string note in notesFound)
+                {
+                    if (!notesPlayed.Contains(note))
+                    {
+                        notesPlayed.Add(note);
+                    }
+                }
+
+                foreach (string note in notesPlayed) { Console.Write(note + ", "); }
+                Console.WriteLine();
+                bool correct = Rev.CheckNotes(notesPlayed);
+                if(correct)
+                {
+                    CorrectScreen();
+                    System.Threading.Thread.Sleep(2000);
+                    
+                    NewQuestion();
+                }
+                else if (notesPlayed.Count > MAXNOTESBEFOREINCORRECT)
+                {
+                    IncorrectScreen();
+                    System.Threading.Thread.Sleep(2000);
+
+                    NewQuestion();
+                }
+            }
+            
+            //Enable tick
+            ListenTick.Start();
+        }
+
+        private void NewQuestion()
+        {
+            ResetAll();
+            //Display Chord
+            lblChord.Text = Rev.NextChord().name.ToString();
+            //Start timer countdown from 60
+            CountdownTimer.Enabled = true;
+            notesPlayed= new List<string>();
+            ListenTick.Enabled = true;
+        }
+        
+        private void CorrectScreen() 
+        {
+            Console.WriteLine("Correct");
+            lblChord.BackgroundImage = new Bitmap(Chordo.Properties.Resources.GreenTick);
+            lblChord.BackgroundImageLayout =  ImageLayout.Zoom;
+            streak++;
+            lblStreak.Text = streak.ToString();
+            Application.DoEvents();
+        }
+        private void IncorrectScreen()
+        {
+            lblChord.BackgroundImage = new Bitmap(Chordo.Properties.Resources.RedCross);
+            lblChord.BackgroundImageLayout = ImageLayout.Zoom;
+            streak = 0;
+            lblStreak.Text = streak.ToString();
+            Application.DoEvents();
+
+        }
+        private void NoScreen()
+        {
+            lblChord.BackgroundImage = null;
+            lblChord.BackgroundImageLayout = ImageLayout.Zoom;
+            Application.DoEvents();
+
+        }
+        private void CountdownTimer_Tick(object sender, EventArgs e)
+        {
+            time--;
+            Console.WriteLine(time);
+            lblTimer.Text = time.ToString();
+            if (time < 0)
+            {
+                IncorrectScreen();
+                System.Threading.Thread.Sleep(2000);
+
+                NewQuestion();
+
+            }
+        }
+
+
     }
 }

@@ -121,7 +121,7 @@
   <data name="btnToggleMusic.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAOYAAADMCAYAAABnXd/rAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        wAAADsABataJCQAADopJREFUeF7t3XtwFeUZx3HQWrUz6tS79TYt1bRlBqWppiDeGCITBrSAMYhaIeGq
+        vAAADrwBlbxySQAADopJREFUeF7t3XtwFeUZx3HQWrUz6tS79TYt1bRlBqWppiDeGCITBrSAMYhaIeGq
         EkREJCTKYJsyFoiDYClYFVTQyK2IqAOWToCkFEgAwdTIJYRLbhAQZALk0j7vzsv0GF+Tk2RP2Pc938/M
         84cIJ/vu7i/nOe/ZfbcdAAAAAAAAAAAAAAAAAAAAAAAAAAAAADedOFF9Qe76gjsyJs6Y2rPH0A3XXnVP
         jVRtTIdeRx4Z8NzKd+Z/mFxZWXWZ/usAIqW8/PAVSxevTkwelP6BCqAO43+/p2o6xvQ5NGd2dqqE+Hz9
@@ -525,4 +525,10 @@
         SUVORK5CYII=
 </value>
   </data>
+  <metadata name="ListenTick.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <metadata name="CountdownTimer.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>123, 17</value>
+  </metadata>
 </root>

@@ -1,14 +1,13 @@
 ﻿using NAudio.Wave;
-using ScottPlot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PianoChordsGame
+namespace Chordo
 {
-    public class NoteListener
+    public class Listener
     {
         public WaveIn waveIn;
         public BufferedWaveProvider bwp;
@@ -16,7 +15,7 @@ namespace PianoChordsGame
         private int BUFFERSIZE;
         public int DEVICENUMBER;
 
-        public NoteListener(int pBUFFERSIZE, int pRATE=44100, int pDeviceNumber=1)
+        public Listener(int pBUFFERSIZE=8192, int pRATE = 44100, int pDeviceNumber = 1)
         {
             RATE = pRATE;
             BUFFERSIZE = pBUFFERSIZE;
@@ -35,7 +34,7 @@ namespace PianoChordsGame
             //Add data to buffer
             bwp.AddSamples(e.Buffer, 0, e.BytesRecorded);
         }
-        
+
         public void StartListening()
         {
             waveIn.DataAvailable += new EventHandler<WaveInEventArgs>(waveIn_DataAvailable);
@@ -43,15 +42,19 @@ namespace PianoChordsGame
             bwp.DiscardOnBufferOverflow = true;
             waveIn.StartRecording();
         }
+        public void StopListening()
+        {
+            waveIn.StopRecording();
+        }
         public string WhatNoteAmI(double frequency)
         {
             double MIDInum = 12 * Math.Log2((double)frequency / (double)440) + 69;
             int MIDInumRounded = (int)Math.Round(MIDInum);
-            string[] notes = { "A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab" };
+            string[] notes = { "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#" };
             string note = notes[((MIDInumRounded - 21) % 12)];
             return note;
         }
-        public event EventHandler<double[][]> Plotting;
+        //public event EventHandler<double[][]> Plotting;
 
         public List<string> ProcessData()
         {
@@ -79,20 +82,19 @@ namespace PianoChordsGame
             double pcmPointSpacingMs = RATE / 1000;
             double fftPointSpacingHz = fftMaxFreq / PointCount;
 
-            double[][] eventData = {pcm, fftDb, new[] {pcmPointSpacingMs}, new[] { fftPointSpacingHz } };
-            OnPlotNew(eventData);
-
+            double[][] eventData = { pcm, fftDb, new[] { pcmPointSpacingMs }, new[] { fftPointSpacingHz } };
+            //OnPlotNew(eventData);
             return PullNotes(fftDb, PointCount);
         }
-        protected virtual void OnPlotNew(double[][] data)
-        {
-            Plotting?.Invoke(this, data);
-        }
+        //protected virtual void OnPlotNew(double[][] data)
+        //{
+            //Plotting?.Invoke(this, data);
+        //}
 
         public double[] CalculatePCMValues(byte[] frames, int PointCount)
         {
 
-           
+
             double[] pcm = new double[PointCount];
 
             for (int i = 0; i < PointCount; i++)

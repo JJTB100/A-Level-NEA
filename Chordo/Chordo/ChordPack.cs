@@ -14,15 +14,12 @@ namespace Chordo
         public ChordPack(string pName, List<Chord> pChords)
         {
             name = pName;
-            if (pChords != null)
-            {
-                chords = pChords;
-            }
-            else
-            {
-                chords = new List<Chord>();
-            }
-
+            chords = pChords;
+        }
+        public ChordPack(string pName)
+        {
+            name = pName;
+            chords = new List<Chord>();
         }
 
         internal void AddChord(Chord chord)
