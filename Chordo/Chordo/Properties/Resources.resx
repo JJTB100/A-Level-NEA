@@ -121,9 +121,6 @@
   <data name="GreenTick" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\GreenTick.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="MajorChordsPack" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\MajorChordsPack.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-  </data>
   <data name="RedCross" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\RedCross.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

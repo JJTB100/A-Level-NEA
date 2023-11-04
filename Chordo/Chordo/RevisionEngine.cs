@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO.Pipes;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
+﻿using System.Text.RegularExpressions;
 
 namespace Chordo
 {
@@ -15,9 +8,10 @@ namespace Chordo
         Chord currentChord;
         public RevisionEngine()
         {
-            foreach(string file in Directory.EnumerateFiles(@"Packs"))
+            foreach (string file in Directory.EnumerateFiles(@"Packs"))
             {
                 packs.Add(loadChords($"{file}"));
+                
             }
         }
         Regex ScanChordsReg = new Regex("(.+), (\\d), (.+), (.+), (.+);");
@@ -37,20 +31,20 @@ namespace Chordo
             //for each chord, match
             foreach (Match match in matches)
             {
-                string CDname = match.Groups[ 1].Value;
-                int CDnumNotes = int.Parse(match.Groups[ 2].Value);
+                string CDname = match.Groups[1].Value;
+                int CDnumNotes = int.Parse(match.Groups[2].Value);
                 string CDnote1 = match.Groups[3].Value;
 
                 Chord CD = new Chord(CDname, CDnumNotes, CDnote1);
 
                 //add each note
-                for (int i=0; i<CDnumNotes; i++)
+                for (int i = 0; i < CDnumNotes; i++)
                 {
-                    CD.AddNote(match.Groups[i+3].Value);
+                    CD.AddNote(match.Groups[i + 3].Value);
                 }
                 pack.AddChord(CD);
             }
-            
+
             return pack;
         }
         private Chord prevChord;
@@ -58,7 +52,7 @@ namespace Chordo
         {
             //make a list of possible chordsD
             List<Chord> possibleChords = new List<Chord>();
-            for(int i=0;i<packs.Count;i++)
+            for (int i = 0; i < packs.Count; i++)
             {
                 if (chosenPacks.Contains(i))
                 {
@@ -74,15 +68,16 @@ namespace Chordo
             //choose a chord
             Random r = new Random();
             int num = r.Next(0, possibleChords.Count);
+            Console.WriteLine(possibleChords.Count);
             currentChord = possibleChords[num];
             prevChord = currentChord;
             return currentChord;
-            
+
         }
 
         internal bool CheckNotes(List<string> notesPlayed)
         {
-            foreach(string note in currentChord.GetNotes())
+            foreach (string note in currentChord.GetNotes())
             {
                 //if not in notes
                 if (!notesPlayed.Contains(note))

@@ -71,18 +71,6 @@ namespace Chordo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Major
-        ///C, 3, C, E, G;
-        ///A, 3, A, C#, E;
-        ///D, 3, D, F#, A;.
-        /// </summary>
-        internal static string MajorChordsPack {
-            get {
-                return ResourceManager.GetString("MajorChordsPack", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap RedCross {

@@ -1,9 +1,4 @@
 ﻿using NAudio.Wave;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Chordo
 {
@@ -15,7 +10,7 @@ namespace Chordo
         private int BUFFERSIZE;
         public int DEVICENUMBER;
 
-        public Listener(int pBUFFERSIZE=8192, int pRATE = 44100, int pDeviceNumber = 1)
+        public Listener(int pBUFFERSIZE = 8192, int pRATE = 44100, int pDeviceNumber = 1)
         {
             RATE = pRATE;
             BUFFERSIZE = pBUFFERSIZE;
@@ -88,7 +83,7 @@ namespace Chordo
         }
         //protected virtual void OnPlotNew(double[][] data)
         //{
-            //Plotting?.Invoke(this, data);
+        //Plotting?.Invoke(this, data);
         //}
 
         public double[] CalculatePCMValues(byte[] frames, int PointCount)

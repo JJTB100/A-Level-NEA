@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Chordo
+﻿namespace Chordo
 {
     internal class Chord
     {
         List<string> notes;
         int score;
         public string name;
-        public Chord(string pName, int numNotes, string note1=null, string note2 = null, string note3 = null, string note4 = null, string note5 = null)
+        public Chord(string pName, int numNotes, string note1 = null, string note2 = null, string note3 = null, string note4 = null, string note5 = null)
         {
             notes = new List<string>();
             AddNote(note1);
@@ -27,8 +21,8 @@ namespace Chordo
         /// </summary>
         /// <param name="note"></param>
         internal void AddNote(string note)
-        { 
-            if(note != null)
+        {
+            if (note != null)
             {
                 notes.Add(note);
             }
