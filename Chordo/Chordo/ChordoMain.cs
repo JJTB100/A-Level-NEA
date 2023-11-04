@@ -17,7 +17,7 @@ namespace Chordo
             InitializeComponent();
             Rev = new RevisionEngine();
             //get packs available
-            foreach (string file in Directory.EnumerateFiles(@"Packs"))
+            foreach (string file in Directory.EnumerateFiles(@"..\..\..\..\Packs"))
             {
                 clbPacks.Items.Add(File.ReadLines(file).First());
             }
@@ -49,7 +49,7 @@ namespace Chordo
         {
             if (btnStartMode)
             {
-                for (int x = 0; x < clbPacks.CheckedItems.Count; x++)
+                for (int x = 0; x < clbPacks.Items.Count; x++)
                 {
                     if (clbPacks.GetItemChecked(x))
                     {
@@ -60,11 +60,13 @@ namespace Chordo
                 {
                     MessageBox.Show("You must select at least 1 pack");
                 }
-                mic.StartListening();
-                NewQuestion();
-                btnStartStop.Text = "Exit";
-                btnStartMode = false;
-
+                else
+                {
+                    mic.StartListening();
+                    NewQuestion();
+                    btnStartStop.Text = "Exit";
+                    btnStartMode = false;
+                }
             }
             else
             {

@@ -1,0 +1,7 @@
+Minor - Beginner
+Cmin, 3, C, D#, G;
+Amin, 3, A, C, E;
+Dmin, 3, D, F, A;
+Emin, 3, E, G, B;
+Fmin, 3, F, G#, C;
+Gmin, 3, G, A#, D;

@@ -8,7 +8,7 @@ namespace Chordo
         Chord currentChord;
         public RevisionEngine()
         {
-            foreach (string file in Directory.EnumerateFiles(@"Packs"))
+            foreach (string file in Directory.EnumerateFiles(@"..\..\..\..\Packs"))
             {
                 packs.Add(loadChords($"{file}"));
                 
