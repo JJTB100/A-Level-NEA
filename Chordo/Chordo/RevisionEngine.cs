@@ -15,9 +15,10 @@ namespace Chordo
         Chord currentChord;
         public RevisionEngine()
         {
-            packs.Add(loadChords(@"MajorChordsPack.txt"));
-            //packs.Add(new ChordPack("Major", ));
-            
+            foreach(string file in Directory.EnumerateFiles(@"Packs"))
+            {
+                packs.Add(loadChords($"{file}"));
+            }
         }
         Regex ScanChordsReg = new Regex("(.+), (\\d), (.+), (.+), (.+);");
         /// <summary>
@@ -53,11 +54,17 @@ namespace Chordo
             return pack;
         }
         private Chord prevChord;
-        public Chord NextChord()
+        public Chord NextChord(List<int> chosenPacks)
         {
             //make a list of possible chordsD
             List<Chord> possibleChords = new List<Chord>();
-            possibleChords.AddRange(packs[0].GetChords());
+            for(int i=0;i<packs.Count;i++)
+            {
+                if (chosenPacks.Contains(i))
+                {
+                    possibleChords.AddRange(packs[i].GetChords());
+                }
+            }
             //remove previous chord from list
             if (possibleChords.Contains(prevChord))
             {
