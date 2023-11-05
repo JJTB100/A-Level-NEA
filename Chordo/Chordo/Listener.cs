@@ -9,6 +9,7 @@ namespace Chordo
         private int RATE;
         private int BUFFERSIZE;
         public int DEVICENUMBER;
+        private double threshold;
 
         public Listener(int pBUFFERSIZE = 8192, int pRATE = 44100, int pDeviceNumber = 1)
         {
@@ -145,9 +146,10 @@ namespace Chordo
         public List<string> PullNotes(double[] fftRealDB, int PointCount)
         {
             List<string> notes = new List<string>();
+            threshold = Calibrate(fftRealDB);
             for (int i = 0; i < fftRealDB.Length; i++)
             {
-                if (fftRealDB[i] > 0 && i > 10)
+                if (fftRealDB[i] > threshold && i > 10)
                 {
                     int frequency = (i * RATE) / PointCount;
                     string note = WhatNoteAmI(frequency);
@@ -159,6 +161,20 @@ namespace Chordo
             }
             return notes;
 
+        }
+
+        private double Calibrate(double[] fftRealDB)
+        {
+            double highest=0;
+            for (int i = 0; i < fftRealDB.Length; i++)
+            {
+                if (fftRealDB[i] > highest)
+                {
+                    highest = fftRealDB[i];
+                }
+            }
+            Console.WriteLine(highest - 0.2);
+            return highest - 0.2;
         }
     }
 }
