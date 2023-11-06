@@ -45,6 +45,10 @@ namespace Chordo
         public string WhatNoteAmI(double frequency)
         {
             double MIDInum = 12 * Math.Log2((double)frequency / (double)440) + 69;
+            if(MIDInum - Math.Truncate(MIDInum)>0.7)
+            {
+                return null;
+            }
             int MIDInumRounded = (int)Math.Round(MIDInum);
             string[] notes = { "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#" };
             string note = notes[((MIDInumRounded - 21) % 12)];
@@ -153,10 +157,14 @@ namespace Chordo
                 {
                     int frequency = (i * RATE) / PointCount;
                     string note = WhatNoteAmI(frequency);
-                    if (!notes.Contains(note))
+                    if(note != null)
                     {
-                        notes.Add(note);
+                        if (!notes.Contains(note))
+                        {
+                            notes.Add(note);
+                        }
                     }
+
                 }
             }
             return notes;
@@ -173,7 +181,6 @@ namespace Chordo
                     highest = fftRealDB[i];
                 }
             }
-            Console.WriteLine(highest - 0.2);
             return highest - 0.2;
         }
     }
