@@ -49,6 +49,7 @@ namespace Chordo
         {
             if (btnStartMode)
             {
+                //add each checked item to the list
                 for (int x = 0; x < clbPacks.Items.Count; x++)
                 {
                     if (clbPacks.GetItemChecked(x))
@@ -56,12 +57,15 @@ namespace Chordo
                         checkedPacks.Add(x);
                     }
                 }
+                //Shows error if no packs selected
                 if (checkedPacks.Count == 0)
                 {
                     MessageBox.Show("You must select at least 1 pack");
                 }
                 else
                 {
+
+                    //Stop the mic listening and reset
                     mic.StartListening();
                     NewQuestion();
                     btnStartStop.Text = "Exit";
