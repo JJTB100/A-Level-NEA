@@ -3,8 +3,12 @@
     internal class Chord
     {
         List<string> notes;
-        int score;
+        public double score;
         public string name;
+
+        public int time = 60;
+        public int timesPlayed = 0;
+
         public Chord(string pName, int numNotes, string note1 = null, string note2 = null, string note3 = null, string note4 = null, string note5 = null)
         {
             notes = new List<string>();
@@ -28,7 +32,7 @@
             }
         }
 
-        internal IEnumerable<string> GetNotes()
+        internal List<string> GetNotes()
         {
             return notes;
         }

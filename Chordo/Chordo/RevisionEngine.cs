@@ -4,6 +4,9 @@ namespace Chordo
 {
     internal class RevisionEngine
     {
+        double timeEffect = 0.5;//Numbers between 0 and 1 that describes how much the previous time effects the chord's score
+        double prevTimeEffect = 0.5;
+        double favouriteEffect = 0.5;
         List<ChordPack> packs = new List<ChordPack>();
         Chord currentChord;
         public RevisionEngine()
@@ -86,6 +89,19 @@ namespace Chordo
                 }
             }
             return true;
+        }
+        public void CalcChordScore(int time, bool isFav)
+        {
+            currentChord.timesPlayed++;
+            int favBoost = 0;
+            if (isFav)
+            {
+                favBoost = 100;
+
+            }
+            double score = (timeEffect * (time) + prevTimeEffect * (currentChord.time) + favouriteEffect * (favBoost)) / 100 * currentChord.timesPlayed;
+            currentChord.score = score;
+            
         }
     }
 }
