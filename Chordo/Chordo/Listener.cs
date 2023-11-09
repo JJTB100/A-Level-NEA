@@ -181,7 +181,7 @@ namespace Chordo
                     highest = fftRealDB[i];
                 }
             }
-            return highest - 0.2;
+            return highest - 0.1;
         }
     }
 }

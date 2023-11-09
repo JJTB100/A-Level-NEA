@@ -47,6 +47,7 @@ namespace Chordo
 
         private void btnStartStop_Click(object sender, EventArgs e)
         {
+
             if (btnStartMode)
             {
                 //add each checked item to the list
@@ -147,7 +148,6 @@ namespace Chordo
 
         private void CorrectScreen()
         {
-            Console.WriteLine("Correct");
             lblChord.BackgroundImage = new Bitmap(Chordo.Properties.Resources.GreenTick);
             lblChord.BackgroundImageLayout = ImageLayout.Zoom;
             streak++;
@@ -173,7 +173,6 @@ namespace Chordo
         private void CountdownTimer_Tick(object sender, EventArgs e)
         {
             time--;
-            Console.WriteLine(time);
             lblTimer.Text = time.ToString();
             if (time < 0)
             {
