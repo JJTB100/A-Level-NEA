@@ -50,14 +50,7 @@ namespace Chordo
 
             if (btnStartMode)
             {
-                //add each checked item to the list
-                for (int x = 0; x < clbPacks.Items.Count; x++)
-                {
-                    if (clbPacks.GetItemChecked(x))
-                    {
-                        checkedPacks.Add(x);
-                    }
-                }
+
                 //Shows error if no packs selected
                 if (checkedPacks.Count == 0)
                 {
@@ -190,6 +183,20 @@ namespace Chordo
             System.Threading.Thread.Sleep(QUESTION_TIMEOUT);
 
             NewQuestion();
+        }
+
+        private void clbPacks_Changed(object sender, EventArgs e)
+        {
+            Console.WriteLine("Selection");
+
+            //add each checked item to the list
+            for (int x = 0; x < clbPacks.Items.Count; x++)
+            {
+                if (clbPacks.GetItemChecked(x))
+                {
+                    checkedPacks.Add(x);
+                }
+            }
         }
     }
 }
