@@ -50,7 +50,15 @@ namespace Chordo
 
             if (btnStartMode)
             {
-
+                checkedPacks = new List<int> { };
+                //add each checked item to the list
+                for (int x = 0; x < clbPacks.Items.Count; x++)
+                {
+                    if (clbPacks.GetItemChecked(x))
+                    {
+                        checkedPacks.Add(x);
+                    }
+                }
                 //Shows error if no packs selected
                 if (checkedPacks.Count == 0)
                 {
@@ -59,7 +67,7 @@ namespace Chordo
                 else
                 {
 
-                    //Stop the mic listening and reset
+                    //Start the mic listening and reset
                     mic.StartListening();
                     NewQuestion();
                     btnStartStop.Text = "Exit";
@@ -185,18 +193,6 @@ namespace Chordo
             NewQuestion();
         }
 
-        private void clbPacks_Changed(object sender, EventArgs e)
-        {
-            Console.WriteLine("Selection");
 
-            //add each checked item to the list
-            for (int x = 0; x < clbPacks.Items.Count; x++)
-            {
-                if (clbPacks.GetItemChecked(x))
-                {
-                    checkedPacks.Add(x);
-                }
-            }
-        }
     }
 }

@@ -1,0 +1,6 @@
+Minor - Intermediate
+C♯min, 3, C♯, E, G♯;
+E♭min, 3, D♯, F♯, A♯;
+F♯min, 3, F♯, A, C♯;
+A♭min, 3, G♯, B, D♯,
+B♭min, 3, C♯, E♯, F

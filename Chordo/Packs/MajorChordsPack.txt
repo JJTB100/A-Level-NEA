@@ -1,7 +1,8 @@
 Major - Beginner
-C, 3, C, E, G;
-A, 3, A, C#, E;
-D, 3, D, F#, A;
-E, 3, E, G#, B;
-F, 3, F, A, C;
-G, 3, G, B, D;
+Cmaj, 3, C, E, G;
+Amaj, 3, A, C♯, E;
+Dmaj, 3, D, F♯, A;
+Emaj, 3, E, G♯, B;
+Fmaj, 3, F, A, C;
+Gmaj, 3, G, B, D;
+Bmaj, 3, B, D♯, F♯

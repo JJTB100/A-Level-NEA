@@ -101,7 +101,7 @@ namespace Chordo
             }
             double score = (timeEffect * (time) + prevTimeEffect * (currentChord.time) + favouriteEffect * (favBoost)) / 100 * currentChord.timesPlayed;
             currentChord.score = score;
-            
+            Console.WriteLine(score);
         }
     }
 }

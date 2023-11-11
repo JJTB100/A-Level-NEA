@@ -1,0 +1,8 @@
+Major 7th Chords
+A7, 4, A, C#, E, G#;
+B7, 4, B, D#, F, A#;
+C7, 4, C, E, G, B;
+D7, 4, D, F#, A, C#;
+E7, 4, E, G#, B, D#;
+F7, 4, F, A, C, E;
+G7, 4, G, B, D, F#;

@@ -5,3 +5,4 @@ Dmin, 3, D, F, A;
 Emin, 3, E, G, B;
 Fmin, 3, F, G#, C;
 Gmin, 3, G, A#, D;
+Bmin, 3, B, D, F#;
