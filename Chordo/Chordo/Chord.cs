@@ -5,6 +5,7 @@
         List<string> notes;
         public double score;
         public string name;
+        public bool favourite;
 
         public int time = 60;
         public int timesPlayed = 0;

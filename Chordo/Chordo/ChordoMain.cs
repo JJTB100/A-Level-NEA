@@ -149,6 +149,7 @@ namespace Chordo
 
         private void CorrectScreen()
         {
+            Rev.CalcChordScore(60 - time);
             lblChord.BackgroundImage = new Bitmap(Chordo.Properties.Resources.GreenTick);
             lblChord.BackgroundImageLayout = ImageLayout.Zoom;
             streak++;
@@ -157,6 +158,7 @@ namespace Chordo
         }
         private void IncorrectScreen()
         {
+            Rev.CalcChordScore(60);
             lblChord.BackgroundImage = new Bitmap(Chordo.Properties.Resources.RedCross);
             lblChord.BackgroundImageLayout = ImageLayout.Zoom;
             streak = 0;

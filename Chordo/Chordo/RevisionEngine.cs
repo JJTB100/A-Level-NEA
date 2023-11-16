@@ -69,9 +69,20 @@ namespace Chordo
             }
 
             //choose a chord
-            Random r = new Random();
-            int num = r.Next(0, possibleChords.Count);
+            possibleChords = possibleChords.OrderBy(x => x.score).ToList();
+            possibleChords.Reverse();
+            foreach (Chord chord in possibleChords)
+            {
+                Console.WriteLine(chord.name + " " +chord.score);
+            }
+            Console.WriteLine();
             Console.WriteLine(possibleChords.Count);
+            Random r = new Random();
+            int num=0;
+            if (!(possibleChords.Count < 2))
+            {
+                num = r.Next(0, 2);
+            }
             currentChord = possibleChords[num];
             prevChord = currentChord;
             return currentChord;
@@ -90,17 +101,18 @@ namespace Chordo
             }
             return true;
         }
-        public void CalcChordScore(int time, bool isFav)
+        public void CalcChordScore(int time)
         {
             currentChord.timesPlayed++;
             int favBoost = 0;
-            if (isFav)
+            if (currentChord.favourite)
             {
                 favBoost = 100;
 
             }
             double score = (timeEffect * (time) + prevTimeEffect * (currentChord.time) + favouriteEffect * (favBoost)) / 100 * currentChord.timesPlayed;
             currentChord.score = score;
+            currentChord.time = time;
             Console.WriteLine(score);
         }
     }
