@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace Chordo
 {
@@ -51,6 +52,7 @@ namespace Chordo
             return pack;
         }
         private Chord prevChord;
+        Random r = new Random();
         public Chord NextChord(List<int> chosenPacks)
         {
             //make a list of possible chordsD
@@ -69,6 +71,7 @@ namespace Chordo
             }
 
             //choose a chord
+            possibleChords = possibleChords.OrderBy(a => r.Next()).ToList();
             possibleChords = possibleChords.OrderBy(x => x.score).ToList();
             possibleChords.Reverse();
             foreach (Chord chord in possibleChords)
@@ -77,7 +80,6 @@ namespace Chordo
             }
             Console.WriteLine();
             Console.WriteLine(possibleChords.Count);
-            Random r = new Random();
             int num=0;
             if (!(possibleChords.Count < 2))
             {
