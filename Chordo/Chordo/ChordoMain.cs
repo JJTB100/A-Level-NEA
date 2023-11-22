@@ -33,6 +33,8 @@ namespace Chordo
         /// </summary>
         void ResetAll()
         {
+            pbFullHeart.Visible = false;
+            pbEmptyHeart.Visible = true;
             time = 60;
             lblChord.Text = "Press Start to continue";
             lblTimer.Text = "__";
@@ -87,7 +89,7 @@ namespace Chordo
                 }
                 else
                 {
-
+                    
                     //Start the mic listening and reset
                     mic.StartListening();
                     NewQuestion();

@@ -19,6 +19,7 @@
             AddNote(note4);
             AddNote(note5);
             name = pName;
+            score = 0.6;
         }
 
         /// <summary>
