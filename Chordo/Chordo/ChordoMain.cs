@@ -10,7 +10,9 @@ namespace Chordo
         bool btnStartMode = true;
         int streak = 0;
         List<int> checkedPacks = new List<int>();
-
+        /// <summary>
+        /// gets the form goin'
+        /// </summary>
         public ChordoMain()
         {
 
@@ -26,6 +28,9 @@ namespace Chordo
             ResetAll();
 
         }
+        /// <summary>
+        /// Resets the time, chord text, screen colour
+        /// </summary>
         void ResetAll()
         {
             time = 60;
@@ -33,18 +38,34 @@ namespace Chordo
             lblTimer.Text = "__";
             NoScreen();
         }
+        /// <summary>
+        /// Runs when the full heart is clicked, makes it an empty heart and unfavourites the chord
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void pbFullHeart_Click(object sender, EventArgs e)
         {
+            Rev.MakeFavourite(false);
             pbFullHeart.Visible = false;
             pbEmptyHeart.Visible = true;
         }
-
+        /// <summary>
+        /// Runs when the empty heart is clicked, makes it full and favourits the chord
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void pbEmptyHeart_Click(object sender, EventArgs e)
         {
+            Rev.MakeFavourite(true);
             pbFullHeart.Visible = true;
             pbEmptyHeart.Visible = false;
         }
-
+        /// <summary>
+        /// Runs on start or stop button clicked, if start button then initilise a lot of the microphone and revision engine, and load the chord packs in the checked list. 
+        /// If the stop button, then stop listening reset stuff.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnStartStop_Click(object sender, EventArgs e)
         {
 
@@ -94,7 +115,11 @@ namespace Chordo
         public int MAXNOTESBEFOREINCORRECT = 7;
 
         public int QUESTION_TIMEOUT = 1000;
-
+        /// <summary>
+        /// runs at a regular interval based on the clock. analyses notes and checks whether they are in the chord or not.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ListenTick_Tick(object sender, EventArgs e)
         {
             //Listen for new chord on tick
@@ -102,8 +127,10 @@ namespace Chordo
             ListenTick.Enabled = false;
             //Listen
             List<string> notesFound = mic.ProcessData();
+            //makes sure there are notes
             if (notesFound != null && notesFound.Count != 0)
             {
+                //make sure none of the notes are repeated
                 foreach (string note in notesFound)
                 {
                     if (!notesPlayed.Contains(note))
@@ -111,9 +138,10 @@ namespace Chordo
                         notesPlayed.Add(note);
                     }
                 }
-
+               
                 foreach (string note in notesPlayed) { Console.Write(note + ", "); }
                 Console.WriteLine();
+                //check if the notes are in the chord and do stuff based on that
                 bool correct = Rev.CheckNotes(notesPlayed);
                 if (correct)
                 {
@@ -134,7 +162,9 @@ namespace Chordo
             //Enable tick
             ListenTick.Start();
         }
-
+        /// <summary>
+        /// Gives a new chord
+        /// </summary>
         private void NewQuestion()
         {
             ResetAll();
@@ -146,7 +176,9 @@ namespace Chordo
             notesPlayed = new List<string>();
             ListenTick.Enabled = true;
         }
-
+        /// <summary>
+        /// Displays the correct screen
+        /// </summary>
         private void CorrectScreen()
         {
             Rev.CalcChordScore(60 - time);
@@ -156,6 +188,9 @@ namespace Chordo
             lblStreak.Text = streak.ToString();
             Application.DoEvents();
         }
+        /// <summary>
+        /// Displays the incorrect screen
+        /// </summary>
         private void IncorrectScreen()
         {
             Rev.CalcChordScore(60);
@@ -166,6 +201,9 @@ namespace Chordo
             Application.DoEvents();
 
         }
+        /// <summary>
+        /// 
+        /// </summary>
         private void NoScreen()
         {
             lblChord.BackgroundImage = null;

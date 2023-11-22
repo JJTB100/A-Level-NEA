@@ -115,5 +115,15 @@ namespace Chordo
             currentChord.time = time;
             Console.WriteLine(score);
         }
+
+        internal object GetCurrentChord()
+        {
+            return currentChord;
+        }
+
+        internal void MakeFavourite(bool v)
+        {
+            currentChord.favourite = v;
+        }
     }
 }
