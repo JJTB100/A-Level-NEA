@@ -54,7 +54,6 @@ namespace Chordo
             string note = notes[((MIDInumRounded - 21) % 12)];
             return note;
         }
-        //public event EventHandler<double[][]> Plotting;
 
         public List<string> ProcessData()
         {
@@ -83,13 +82,8 @@ namespace Chordo
             double fftPointSpacingHz = fftMaxFreq / PointCount;
 
             double[][] eventData = { pcm, fftDb, new[] { pcmPointSpacingMs }, new[] { fftPointSpacingHz } };
-            //OnPlotNew(eventData);
             return PullNotes(fftDb, PointCount);
         }
-        //protected virtual void OnPlotNew(double[][] data)
-        //{
-        //Plotting?.Invoke(this, data);
-        //}
 
         public double[] CalculatePCMValues(byte[] frames, int PointCount)
         {

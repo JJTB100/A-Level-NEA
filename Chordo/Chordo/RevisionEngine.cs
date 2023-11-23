@@ -74,12 +74,6 @@ namespace Chordo
             possibleChords = possibleChords.OrderBy(a => r.Next()).ToList();
             possibleChords = possibleChords.OrderBy(x => x.score).ToList();
             possibleChords.Reverse();
-            foreach (Chord chord in possibleChords)
-            {
-                Console.WriteLine(chord.name + " " +chord.score);
-            }
-            Console.WriteLine();
-            Console.WriteLine(possibleChords.Count);
             int num=0;
             if (!(possibleChords.Count < 2))
             {
@@ -115,10 +109,9 @@ namespace Chordo
             double score = (timeEffect * (time) + prevTimeEffect * (currentChord.time) + favouriteEffect * (favBoost)) / 100 * currentChord.timesPlayed;
             currentChord.score = score;
             currentChord.time = time;
-            Console.WriteLine(score);
         }
 
-        internal object GetCurrentChord()
+        internal Chord GetCurrentChord()
         {
             return currentChord;
         }

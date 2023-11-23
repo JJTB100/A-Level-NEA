@@ -11,7 +11,7 @@ namespace Chordo
         int streak = 0;
         List<int> checkedPacks = new List<int>();
         /// <summary>
-        /// gets the form goin'
+        /// gets the form going
         /// </summary>
         public ChordoMain()
         {
@@ -36,7 +36,7 @@ namespace Chordo
             pbFullHeart.Visible = false;
             pbEmptyHeart.Visible = true;
             time = 60;
-            lblChord.Text = "Press Start to continue";
+            //lblChord.Text = "Press Start to continue";
             lblTimer.Text = "__";
             NoScreen();
         }
@@ -141,8 +141,7 @@ namespace Chordo
                     }
                 }
                
-                foreach (string note in notesPlayed) { Console.Write(note + ", "); }
-                Console.WriteLine();
+//                foreach (string note in notesPlayed) { Console.Write(note + ", "); }
                 //check if the notes are in the chord and do stuff based on that
                 bool correct = Rev.CheckNotes(notesPlayed);
                 if (correct)
@@ -172,11 +171,19 @@ namespace Chordo
             ResetAll();
             //Display Chord
             lblChord.Text = Rev.NextChord(checkedPacks).name.ToString();
-
+            //Update the favourite icon accordingly
+            if (Rev.GetCurrentChord().IsFav() == true)
+            {
+                pbEmptyHeart.Visible = false;
+                pbFullHeart.Visible = true;
+            }
             //Start timer countdown from 60
             CountdownTimer.Enabled = true;
             notesPlayed = new List<string>();
             ListenTick.Enabled = true;
+
+            int x = 2;
+            Console.WriteLine($"Chord Name: {Rev.GetCurrentChord().name}\nFavourite: {Rev.GetCurrentChord().IsFav()}\nScore: {Rev.GetCurrentChord().score}\nNotes: {Rev.GetCurrentChord().GetNotesAsString()}");
         }
         /// <summary>
         /// Displays the correct screen

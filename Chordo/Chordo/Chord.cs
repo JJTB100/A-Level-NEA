@@ -1,4 +1,7 @@
-﻿namespace Chordo
+﻿using Accord;
+using System.Web;
+
+namespace Chordo
 {
     internal class Chord
     {
@@ -20,7 +23,11 @@
             AddNote(note5);
             name = pName;
             score = 0.6;
+            Console.WriteLine(GetNotesAsString());
+
         }
+
+
 
         /// <summary>
         /// Adds a note to the chord
@@ -37,6 +44,21 @@
         internal List<string> GetNotes()
         {
             return notes;
+        }
+
+        internal string GetNotesAsString()
+        {
+            string output = "";
+            foreach (string note in notes)
+            {
+                output += note + ", ";
+            }
+            return output;
+        }
+
+        internal bool IsFav()
+        {
+            return favourite;
         }
     }
 }
