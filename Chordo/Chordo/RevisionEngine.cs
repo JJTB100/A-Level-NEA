@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using System.Web;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace Chordo
@@ -10,6 +11,7 @@ namespace Chordo
         double favouriteEffect = 0.5;
         List<ChordPack> packs = new List<ChordPack>();
         Chord currentChord;
+        List<Chord> AllChords;
         public RevisionEngine()
         {
             foreach (string file in Directory.EnumerateFiles(@"..\..\..\..\Packs"))
@@ -51,6 +53,45 @@ namespace Chordo
 
             return pack;
         }
+        private void SaveUserData(string address)
+        {
+            //open csv file
+            /*format:
+             * chordName, score, favourite
+             */
+            List<string> memory = File.ReadLines(address).ToList();
+            string[,] mem2d = new string[memory.Count, 3];
+            //seperate into 2d array
+            for (int i = 0; i < memory.Count(); i++)
+            {
+                for (int j = 0; j < memory[i].Split(",").Count(); j++)
+                {
+                    mem2d[i, j] = memory[i].Split(",")[j];
+                }
+            }
+            //check if chord is in db
+
+            foreach (Chord chord in AllChords)
+            {
+                bool found = false;
+                for(int i=0; i<memory.Count(); i++)
+                {
+                    if (mem2d[i, 0] == (chord.name))
+                    {
+                        //if it is, change the score and fav state
+                        mem2d[i, 1] = chord.score.ToString();
+                        mem2d[i, 2] = chord.favourite.ToString();
+                        found = true;
+                    }
+                }
+                if (!found)
+                {
+                    //if it isn't, add it
+                    
+                }
+
+            }
+        }
         private Chord prevChord;
         Random r = new Random();
         public Chord NextChord(List<int> chosenPacks)
@@ -59,6 +100,7 @@ namespace Chordo
             List<Chord> possibleChords = new List<Chord>();
             for (int i = 0; i < packs.Count; i++)
             {
+                AllChords.AddRange(packs[i].GetChords());
                 if (chosenPacks.Contains(i))
                 {
                     possibleChords.AddRange(packs[i].GetChords());
