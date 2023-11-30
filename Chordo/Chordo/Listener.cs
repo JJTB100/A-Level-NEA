@@ -4,6 +4,7 @@ namespace Chordo
 {
     public class Listener
     {
+        //Declare classes and variables
         public WaveIn waveIn;
         public BufferedWaveProvider bwp;
         private int RATE;
@@ -11,6 +12,12 @@ namespace Chordo
         public int DEVICENUMBER;
         private double threshold;
 
+        /// <summary>
+        /// Consructor - instantiates helper classes with values given, starts buffer.
+        /// </summary>
+        /// <param name="pBUFFERSIZE">Size of the buffer each sample | default: 8192 bytes</param>
+        /// <param name="pRATE">sample rate of the wave | default = 44100Hz</param>
+        /// <param name="pDeviceNumber">The device number of the microphone | default = 1</param>
         public Listener(int pBUFFERSIZE = 8192, int pRATE = 44100, int pDeviceNumber = 1)
         {
             RATE = pRATE;
@@ -22,9 +29,13 @@ namespace Chordo
                 DeviceNumber = DEVICENUMBER,
                 WaveFormat = new WaveFormat(RATE, 1)
             };
-
             bwp = new BufferedWaveProvider(waveIn.WaveFormat);
         }
+        /// <summary>
+        /// Event handler that activates when there is data available in the class.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void waveIn_DataAvailable(object? sender, WaveInEventArgs e)
         {
             //Add data to buffer
@@ -42,9 +53,15 @@ namespace Chordo
         {
             waveIn.StopRecording();
         }
+        /// <summary>
+        /// finds what note is a frequency by using midi nums. Contains validation to discard notes if they are too far away from the actual frequency.
+        /// </summary>
+        /// <param name="frequency"></param>
+        /// <returns></returns>
         public string WhatNoteAmI(double frequency)
         {
             double MIDInum = 12 * Math.Log2((double)frequency / (double)440) + 69;
+            //Validation: too far away from actaul frequency
             if(MIDInum - Math.Truncate(MIDInum)>0.7)
             {
                 return null;
@@ -140,7 +157,12 @@ namespace Chordo
             return fftRealDB;
 
         }
-
+        /// <summary>
+        /// Get the notes from an array of fft values, including validation: variable threshold, 
+        /// </summary>
+        /// <param name="fftRealDB"></param>
+        /// <param name="PointCount"></param>
+        /// <returns></returns>
         public List<string> PullNotes(double[] fftRealDB, int PointCount)
         {
             List<string> notes = new List<string>();

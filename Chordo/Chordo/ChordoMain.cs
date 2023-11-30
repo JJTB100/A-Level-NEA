@@ -1,3 +1,4 @@
+using NAudio.Wave;
 using System.Windows.Forms;
 
 namespace Chordo
@@ -23,6 +24,10 @@ namespace Chordo
             {
                 clbPacks.Items.Add(File.ReadLines(file).First());
             }
+
+            //Presence check for a microphone
+            WaveIn devCheck = new WaveIn();
+            //tbc
 
             mic = new Listener();
             ResetAll();
