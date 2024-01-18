@@ -216,7 +216,7 @@ namespace Chordo
 
         }
         /// <summary>
-        /// 
+        /// Undisplays the tick/cross
         /// </summary>
         private void NoScreen()
         {
@@ -225,6 +225,11 @@ namespace Chordo
             Application.DoEvents();
 
         }
+        /// <summary>
+        /// Runs every time the countdown timer ticks
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CountdownTimer_Tick(object sender, EventArgs e)
         {
             time--;
@@ -238,7 +243,11 @@ namespace Chordo
 
             }
         }
-
+        /// <summary>
+        /// Runs on press of the skip button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnSkip_Click(object sender, EventArgs e)
         {
             IncorrectScreen();
