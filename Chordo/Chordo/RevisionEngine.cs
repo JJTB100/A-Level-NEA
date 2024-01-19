@@ -11,13 +11,24 @@ namespace Chordo
         double favouriteEffect = 0.5;
         List<ChordPack> packs = new List<ChordPack>();
         Chord currentChord;
-        List<Chord> AllChords;
-        public RevisionEngine()
+        public List<Chord> AllChords;
+        Label ErrorOut;
+        public RevisionEngine(Label pErrorOut, ListBox clbPacks )
         {
+            this.ErrorOut = pErrorOut;
+            AllChords = new List<Chord>();
             foreach (string file in Directory.EnumerateFiles(@"..\..\..\..\Packs"))
             {
-                packs.Add(loadChords($"{file}"));
                 
+                //validation, don't add if pack hasn't got chords in it
+                ChordPack? chordpck = (loadChords($"{file}"));
+                if (chordpck != null)
+                {
+                    clbPacks.Items.Add(File.ReadLines(file).First());
+                    packs.Add(chordpck);
+                }
+                
+
             }
         }
         Regex ScanChordsReg = new Regex("(.+), (\\d), (.+), (.+), (.+);");
@@ -27,12 +38,21 @@ namespace Chordo
         /// <param name="packAddress"></param>
         /// <returns>a chord pack</returns>
         /// <exception cref="NotImplementedException"></exception>
-        private ChordPack loadChords(string packAddress)
+        private ChordPack? loadChords(string packAddress)
         {
             //Read Text from file
             string packText = File.ReadAllText(packAddress);
+            
             MatchCollection matches = ScanChordsReg.Matches(packText);
+
+            if (matches.Count == 0)
+            {
+                ErrorOut.Text = $"The chordpack {packAddress} didn't contain valid data or was empty.";
+                return null;
+            }
             ChordPack pack = new(File.ReadLines(packAddress).First());
+
+            
 
             //for each chord, match
             foreach (Match match in matches)

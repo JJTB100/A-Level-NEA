@@ -44,6 +44,7 @@
             panelHeartContainer = new Panel();
             pbFullHeart = new PictureBox();
             pbEmptyHeart = new PictureBox();
+            lblErrorOut = new Label();
             ListenTick = new System.Windows.Forms.Timer(components);
             CountdownTimer = new System.Windows.Forms.Timer(components);
             tblLayout.SuspendLayout();
@@ -71,6 +72,7 @@
             tblLayout.Controls.Add(btnHelp, 3, 2);
             tblLayout.Controls.Add(lblEmptyHeart, 1, 0);
             tblLayout.Controls.Add(panelHeartContainer, 1, 2);
+            tblLayout.Controls.Add(lblErrorOut, 2, 2);
             tblLayout.Dock = DockStyle.Fill;
             tblLayout.Location = new Point(0, 0);
             tblLayout.Name = "tblLayout";
@@ -232,6 +234,16 @@
             pbEmptyHeart.TabStop = false;
             pbEmptyHeart.Click += pbEmptyHeart_Click;
             // 
+            // lblErrorOut
+            // 
+            lblErrorOut.AutoSize = true;
+            lblErrorOut.Dock = DockStyle.Fill;
+            lblErrorOut.Location = new Point(208, 465);
+            lblErrorOut.Name = "lblErrorOut";
+            lblErrorOut.Size = new Size(517, 78);
+            lblErrorOut.TabIndex = 12;
+            lblErrorOut.Text = "Hi! Select Chord Packs to begin!";
+            // 
             // ListenTick
             // 
             ListenTick.Interval = 20;
@@ -276,5 +288,6 @@
         private System.Windows.Forms.Timer ListenTick;
         private System.Windows.Forms.Timer CountdownTimer;
         private CheckedListBox clbPacks;
+        private Label lblErrorOut;
     }
 }

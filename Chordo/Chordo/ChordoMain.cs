@@ -18,12 +18,9 @@ namespace Chordo
         {
 
             InitializeComponent();
-            Rev = new RevisionEngine();
-            //get packs available
-            foreach (string file in Directory.EnumerateFiles(@"..\..\..\..\Packs"))
-            {
-                clbPacks.Items.Add(File.ReadLines(file).First());
-            }
+            lblErrorOut.Text = "Hi! Please select a pack to continue.";
+            Rev = new RevisionEngine(lblErrorOut, clbPacks);
+            
 
             //Presence check for a microphone
             WaveIn devCheck = new WaveIn();
@@ -94,7 +91,7 @@ namespace Chordo
                 }
                 else
                 {
-                    
+
                     //Start the mic listening and reset
                     mic.StartListening();
                     NewQuestion();
@@ -145,8 +142,8 @@ namespace Chordo
                         notesPlayed.Add(note);
                     }
                 }
-               
-//                foreach (string note in notesPlayed) { Console.Write(note + ", "); }
+
+                //                foreach (string note in notesPlayed) { Console.Write(note + ", "); }
                 //check if the notes are in the chord and do stuff based on that
                 bool correct = Rev.CheckNotes(notesPlayed);
                 if (correct)
