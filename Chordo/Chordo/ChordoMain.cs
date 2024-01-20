@@ -134,16 +134,17 @@ namespace Chordo
             //makes sure there are notes
             if (notesFound != null && notesFound.Count != 0)
             {
+                
                 //make sure none of the notes are repeated
                 foreach (string note in notesFound)
                 {
-                    if (!notesPlayed.Contains(note))
+                    //if (!notesPlayed.Contains(note))
                     {
                         notesPlayed.Add(note);
+
                     }
                 }
-
-                //                foreach (string note in notesPlayed) { Console.Write(note + ", "); }
+                foreach (string note in notesPlayed) { Console.Write(note + ", "); }
                 //check if the notes are in the chord and do stuff based on that
                 bool correct = Rev.CheckNotes(notesPlayed);
                 if (correct)

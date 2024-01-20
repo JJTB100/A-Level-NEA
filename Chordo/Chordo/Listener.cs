@@ -62,12 +62,12 @@ namespace Chordo
         {
             double MIDInum = 12 * Math.Log2((double)frequency / (double)440) + 69;
             //Validation: too far away from actaul frequency
-            if(MIDInum - Math.Truncate(MIDInum)>0.7)
+            if(MIDInum - Math.Round(MIDInum)>Math.Abs(0.7))
             {
                 return null;
             }
             int MIDInumRounded = (int)Math.Round(MIDInum);
-            string[] notes = { "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#" };
+            string[] notes = { "A", "A♯", "B", "C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯" };
             string note = notes[((MIDInumRounded - 21) % 12)];
             return note;
         }
@@ -82,14 +82,14 @@ namespace Chordo
 
             //check that the buffer isn't empty
             if (frames.Length == 0) return null;
-            if (frames[frameSize - 2] == 0) return null;
+            //if (frames[frameSize - 2] == 0) return null;
 
             //pull PCM values from the buffer
             // incoming data is 16-bit (2 bytes per audio point)
             int BYTES_PER_POINT = 2;
-
             // create a (32-bit) int array ready to fill with the 16-bit data
             int PointCount = frames.Length / BYTES_PER_POINT;
+            //Console.WriteLine(PointCount);
 
             double[] pcm = CalculatePCMValues(frames, PointCount);
             double[] fftDb = DbScale(CalculateFFTValues(frames, PointCount, pcm));
@@ -153,7 +153,6 @@ namespace Chordo
                 fftRealDB[a] = y;
                 a++;
             }
-
             return fftRealDB;
 
         }
@@ -171,6 +170,7 @@ namespace Chordo
             {
                 if (fftRealDB[i] > threshold && i > 10)
                 {
+                    
                     int frequency = (i * RATE) / PointCount;
                     string note = WhatNoteAmI(frequency);
                     if(note != null)
@@ -190,14 +190,28 @@ namespace Chordo
         private double Calibrate(double[] fftRealDB)
         {
             double highest=0;
+            double secondHighest = 0;
+            double thirdHighest = 0;
+            double fourthHighest = 0;
             for (int i = 0; i < fftRealDB.Length; i++)
             {
                 if (fftRealDB[i] > highest)
                 {
                     highest = fftRealDB[i];
                 }
+                else if (fftRealDB[i] > secondHighest){
+                    secondHighest = fftRealDB[i];
+                }
+                else if (fftRealDB[i] > thirdHighest)
+                {
+                    thirdHighest = fftRealDB[i];
+                }
+                else if (fftRealDB[i] > fourthHighest)
+                {
+                    fourthHighest = fftRealDB[i];
+                }
             }
-            return highest - 0.1;
+            return fourthHighest;
         }
     }
 }
