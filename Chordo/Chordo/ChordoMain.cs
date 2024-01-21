@@ -116,7 +116,7 @@ namespace Chordo
 
         List<string> notesPlayed = new List<string>();
 
-        public int MAXNOTESBEFOREINCORRECT = 7;
+        public int MAXNOTESBEFOREINCORRECT = 100;
 
         public int QUESTION_TIMEOUT = 1000;
         /// <summary>
@@ -138,13 +138,13 @@ namespace Chordo
                 //make sure none of the notes are repeated
                 foreach (string note in notesFound)
                 {
-                    //if (!notesPlayed.Contains(note))
+                    if (!notesPlayed.Contains(note))
                     {
-                        notesPlayed.Add(note);
-
+                        notesPlayed.Add(note);                        
                     }
-                }
+          }
                 foreach (string note in notesPlayed) { Console.Write(note + ", "); }
+                Console.WriteLine();
                 //check if the notes are in the chord and do stuff based on that
                 bool correct = Rev.CheckNotes(notesPlayed);
                 if (correct)
