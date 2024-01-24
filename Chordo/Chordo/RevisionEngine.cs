@@ -64,7 +64,7 @@ namespace Chordo
                 Chord CD = new Chord(CDname, CDnumNotes, CDnote1);
 
                 //add each note
-                for (int i = 0; i < CDnumNotes; i++)
+                for (int i = 1; i < CDnumNotes; i++)
                 {
                     CD.AddNote(match.Groups[i + 3].Value);
                 }
