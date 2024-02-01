@@ -1,6 +1,8 @@
 ﻿using System.Text.RegularExpressions;
 using System.Web;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
+using CsvHelper;
+using System.Globalization;
 
 namespace Chordo
 {
@@ -75,45 +77,28 @@ namespace Chordo
         }
         private void SaveUserData(string address)
         {
-            //open csv file
-            /*format:
-             * chordName, score, favourite
-             */
-            List<string> memory = File.ReadLines(address).ToList();
-            string[,] mem2d = new string[memory.Count, 3];
-            //seperate into 2d array
-            for (int i = 0; i < memory.Count(); i++)
+            //create chords record
+            foreach (Chord CC in AllChords)
             {
-                for (int j = 0; j < memory[i].Split(",").Count(); j++)
-                {
-                    mem2d[i, j] = memory[i].Split(",")[j];
-                }
-            }
-            //check if chord is in db
+                Console.Write(AllChords);
 
-            foreach (Chord chord in AllChords)
+            }
+            //new csv file
+            using (var writer = new StreamWriter(address))
+
+            using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
             {
-                bool found = false;
-                for(int i=0; i<memory.Count(); i++)
-                {
-                    if (mem2d[i, 0] == (chord.name))
-                    {
-                        //if it is, change the score and fav state
-                        mem2d[i, 1] = chord.score.ToString();
-                        mem2d[i, 2] = chord.favourite.ToString();
-                        found = true;
-                    }
-                }
-                if (!found)
-                {
-                    //if it isn't, add it
-                    
-                }
+                csv.WriteRecords(AllChords);
 
             }
         }
         private Chord prevChord;
         Random r = new Random();
+        /// <summary>
+        /// Chooses a next new chord, uses score
+        /// </summary>
+        /// <param name="chosenPacks"></param>
+        /// <returns></returns>
         public Chord NextChord(List<int> chosenPacks)
         {
             //make a list of possible chordsD
@@ -143,6 +128,10 @@ namespace Chordo
             }
             currentChord = possibleChords[num];
             prevChord = currentChord;
+
+            //save user data
+            SaveUserData(@"..\..\..\..\UserData");
+
             return currentChord;
 
         }
@@ -159,16 +148,24 @@ namespace Chordo
             }
             return true;
         }
+        /// <summary>
+        /// Calculates a new score for the chord
+        /// </summary>
+        /// <param name="time"></param>
         public void CalcChordScore(int time)
         {
+            // keep track of timesPlayed
             currentChord.timesPlayed++;
             int favBoost = 0;
+            // check if it's favourited or not
             if (currentChord.favourite)
             {
                 favBoost = 100;
 
             }
+            // calc score
             double score = (timeEffect * (time) + prevTimeEffect * (currentChord.time) + favouriteEffect * (favBoost)) / 100 * currentChord.timesPlayed;
+            // store score and time
             currentChord.score = score;
             currentChord.time = time;
         }
