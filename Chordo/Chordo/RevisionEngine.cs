@@ -30,8 +30,12 @@ namespace Chordo
                     packs.Add(chordpck);
                 }
                 
-
             }
+            for (int i = 0; i < packs.Count; i++)
+            {
+                AllChords.AddRange(packs[i].GetChords());
+            }
+            LoadUserData(@"..\..\..\..\UserData.csv");
         }
         Regex ScanChordsReg = new Regex("(.+), (\\d), (.+), (.+), (.+);");
         /// <summary>
@@ -54,8 +58,6 @@ namespace Chordo
             }
             ChordPack pack = new(File.ReadLines(packAddress).First());
 
-            
-
             //for each chord, match
             foreach (Match match in matches)
             {
@@ -75,22 +77,39 @@ namespace Chordo
 
             return pack;
         }
+        /// <summary>
+        /// Saves the Chord data to a csv file
+        /// </summary>
+        /// <param name="address"></param>
         private void SaveUserData(string address)
         {
-            //create chords record
-            foreach (Chord CC in AllChords)
-            {
-                Console.Write(AllChords);
-
-            }
             //new csv file
             using (var writer = new StreamWriter(address))
 
             using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
             {
+
+                csv.Context.RegisterClassMap<ChordMap>();
                 csv.WriteRecords(AllChords);
 
             }
+        }
+        private void LoadUserData(string address)
+        {
+            if(File.Exists(address))
+            {
+                using (var reader = new StreamReader(address))
+                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                {
+                    csv.Context.RegisterClassMap<ChordMap>();
+                    var records = csv.GetRecords<Chord>();
+                    foreach (var record in records) 
+                    {
+                        Console.WriteLine(record);
+                    }
+                }
+            }
+
         }
         private Chord prevChord;
         Random r = new Random();
@@ -105,7 +124,6 @@ namespace Chordo
             List<Chord> possibleChords = new List<Chord>();
             for (int i = 0; i < packs.Count; i++)
             {
-                AllChords.AddRange(packs[i].GetChords());
                 if (chosenPacks.Contains(i))
                 {
                     possibleChords.AddRange(packs[i].GetChords());
@@ -130,7 +148,7 @@ namespace Chordo
             prevChord = currentChord;
 
             //save user data
-            SaveUserData(@"..\..\..\..\UserData");
+            SaveUserData(@"..\..\..\..\UserData.csv");
 
             return currentChord;
 
