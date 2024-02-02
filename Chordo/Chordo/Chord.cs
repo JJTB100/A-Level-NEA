@@ -26,7 +26,10 @@ namespace Chordo
             Console.WriteLine(GetNotesAsString());
 
         }
-
+        public Chord()
+        {
+            
+        }
 
 
         /// <summary>

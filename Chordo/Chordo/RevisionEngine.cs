@@ -94,22 +94,54 @@ namespace Chordo
 
             }
         }
+        /// <summary>
+        /// loads the user data from address
+        /// </summary>
+        /// <param name="address"></param>
         private void LoadUserData(string address)
         {
             if(File.Exists(address))
             {
+                //open csv
                 using (var reader = new StreamReader(address))
                 using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
                 {
                     csv.Context.RegisterClassMap<ChordMap>();
+                    //get chords
                     var records = csv.GetRecords<Chord>();
-                    foreach (var record in records) 
+                    //iterate over chords
+                    foreach(var record in records)
                     {
-                        Console.WriteLine(record);
+                        //give current chords new values
+                        foreach (var OldChord in FindChords(record.name))
+                        {
+                            OldChord.score = record.score;
+                            OldChord.favourite = record.favourite;
+                            OldChord.time = record.time;
+                            OldChord.timesPlayed = record.timesPlayed;
+                            OldChord.name = record.name;
+                        }
                     }
                 }
             }
 
+        }
+        /// <summary>
+        /// Finds all the chords in AllChords with a specific name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns>List of Chords</returns>
+        private List<Chord> FindChords(string name)
+        {
+            List<Chord> returnValues = new List<Chord>();
+            foreach(var chord in AllChords)
+            {
+                if(chord.name == name)
+                {
+                    returnValues.Add(chord);
+                }
+            }
+            return returnValues;
         }
         private Chord prevChord;
         Random r = new Random();

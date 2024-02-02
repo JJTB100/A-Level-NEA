@@ -186,7 +186,7 @@ namespace Chordo
             ListenTick.Enabled = true;
 
             int x = 2;
-            Console.WriteLine($"Chord Name: {Rev.GetCurrentChord().name}\nFavourite: {Rev.GetCurrentChord().IsFav()}\nScore: {Rev.GetCurrentChord().score}\nNotes: {Rev.GetCurrentChord().GetNotesAsString()}");
+            Console.WriteLine($"Chord Name: {Rev.GetCurrentChord().name}\nFavourite: {Rev.GetCurrentChord().IsFav()}\nScore: {Rev.GetCurrentChord().score}\nNotes: {Rev.GetCurrentChord().GetNotesAsString()}\nTimes Played: {Rev.GetCurrentChord().timesPlayed}");
         }
         /// <summary>
         /// Displays the correct screen
