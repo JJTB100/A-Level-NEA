@@ -39,28 +39,23 @@
             lblChord = new Label();
             lblStreak = new Label();
             btnSkip = new Button();
-            btnHelp = new Button();
             lblEmptyHeart = new Label();
-            panelHeartContainer = new Panel();
-            pbFullHeart = new PictureBox();
-            pbEmptyHeart = new PictureBox();
+            lblHelper = new Label();
             lblErrorOut = new Label();
+            btnHeart = new Button();
             ListenTick = new System.Windows.Forms.Timer(components);
             CountdownTimer = new System.Windows.Forms.Timer(components);
             tblLayout.SuspendLayout();
-            panelHeartContainer.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pbFullHeart).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pbEmptyHeart).BeginInit();
             SuspendLayout();
             // 
             // tblLayout
             // 
             tblLayout.ColumnCount = 5;
-            tblLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 17.7580471F));
-            tblLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 4.99445057F));
-            tblLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 58.0466156F));
-            tblLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 9.322974F));
-            tblLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 9.766926F));
+            tblLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20.9766922F));
+            tblLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 7.880133F));
+            tblLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 51.9422874F));
+            tblLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 9.333332F));
+            tblLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 9.777777F));
             tblLayout.Controls.Add(clbPacks, 0, 1);
             tblLayout.Controls.Add(lblTitle, 2, 0);
             tblLayout.Controls.Add(btnStartStop, 3, 0);
@@ -68,36 +63,42 @@
             tblLayout.Controls.Add(lblTimer, 0, 0);
             tblLayout.Controls.Add(lblChord, 2, 1);
             tblLayout.Controls.Add(lblStreak, 3, 1);
-            tblLayout.Controls.Add(btnSkip, 4, 2);
-            tblLayout.Controls.Add(btnHelp, 3, 2);
+            tblLayout.Controls.Add(btnSkip, 3, 2);
             tblLayout.Controls.Add(lblEmptyHeart, 1, 0);
-            tblLayout.Controls.Add(panelHeartContainer, 1, 2);
-            tblLayout.Controls.Add(lblErrorOut, 2, 2);
+            tblLayout.Controls.Add(lblHelper, 2, 2);
+            tblLayout.Controls.Add(lblErrorOut, 2, 3);
+            tblLayout.Controls.Add(btnHeart, 1, 2);
             tblLayout.Dock = DockStyle.Fill;
             tblLayout.Location = new Point(0, 0);
             tblLayout.Name = "tblLayout";
-            tblLayout.RowCount = 3;
-            tblLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 13.333333F));
-            tblLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 86.6666641F));
-            tblLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 77F));
+            tblLayout.RowCount = 4;
+            tblLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 19.52118F));
+            tblLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 62.43094F));
+            tblLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 9.023941F));
+            tblLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 8.839779F));
+            tblLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             tblLayout.Size = new Size(901, 543);
             tblLayout.TabIndex = 0;
             // 
             // clbPacks
             // 
+            clbPacks.CausesValidation = false;
+            clbPacks.CheckOnClick = true;
             clbPacks.Dock = DockStyle.Fill;
+            clbPacks.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
             clbPacks.FormattingEnabled = true;
-            clbPacks.Location = new Point(3, 65);
+            clbPacks.Location = new Point(3, 109);
             clbPacks.Name = "clbPacks";
-            clbPacks.Size = new Size(154, 397);
+            clbPacks.Size = new Size(183, 333);
             clbPacks.TabIndex = 1;
+            clbPacks.SelectedIndexChanged += clbPacks_SelectedIndexChanged;
             // 
             // lblTitle
             // 
             lblTitle.Anchor = AnchorStyles.Top;
             lblTitle.AutoSize = true;
             lblTitle.Font = new Font("Microsoft Sans Serif", 36F, FontStyle.Bold, GraphicsUnit.Point);
-            lblTitle.Location = new Point(372, 0);
+            lblTitle.Location = new Point(399, 0);
             lblTitle.Name = "lblTitle";
             lblTitle.Size = new Size(189, 55);
             lblTitle.TabIndex = 0;
@@ -108,9 +109,10 @@
             btnStartStop.AutoSize = true;
             tblLayout.SetColumnSpan(btnStartStop, 2);
             btnStartStop.Dock = DockStyle.Fill;
+            btnStartStop.Font = new Font("Segoe UI", 36F, FontStyle.Bold, GraphicsUnit.Point);
             btnStartStop.Location = new Point(731, 3);
             btnStartStop.Name = "btnStartStop";
-            btnStartStop.Size = new Size(167, 56);
+            btnStartStop.Size = new Size(167, 100);
             btnStartStop.TabIndex = 1;
             btnStartStop.Text = "Start";
             btnStartStop.UseVisualStyleBackColor = true;
@@ -119,13 +121,15 @@
             // btnToggleMusic
             // 
             btnToggleMusic.AutoSize = true;
+            btnToggleMusic.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             btnToggleMusic.BackgroundImage = (Image)resources.GetObject("btnToggleMusic.BackgroundImage");
             btnToggleMusic.BackgroundImageLayout = ImageLayout.Zoom;
             btnToggleMusic.Dock = DockStyle.Fill;
             btnToggleMusic.ImageAlign = ContentAlignment.TopCenter;
-            btnToggleMusic.Location = new Point(3, 468);
+            btnToggleMusic.Location = new Point(3, 448);
             btnToggleMusic.Name = "btnToggleMusic";
-            btnToggleMusic.Size = new Size(154, 72);
+            tblLayout.SetRowSpan(btnToggleMusic, 2);
+            btnToggleMusic.Size = new Size(183, 92);
             btnToggleMusic.TabIndex = 4;
             btnToggleMusic.TextAlign = ContentAlignment.BottomCenter;
             btnToggleMusic.UseVisualStyleBackColor = true;
@@ -134,10 +138,10 @@
             // 
             lblTimer.AutoSize = true;
             lblTimer.Dock = DockStyle.Fill;
-            lblTimer.Font = new Font("Microsoft Sans Serif", 36F, FontStyle.Bold, GraphicsUnit.Point);
+            lblTimer.Font = new Font("Russo One", 71.99999F, FontStyle.Bold, GraphicsUnit.Point);
             lblTimer.Location = new Point(3, 0);
             lblTimer.Name = "lblTimer";
-            lblTimer.Size = new Size(154, 62);
+            lblTimer.Size = new Size(183, 106);
             lblTimer.TabIndex = 5;
             lblTimer.Text = "00";
             // 
@@ -145,10 +149,10 @@
             // 
             lblChord.AutoSize = true;
             lblChord.Dock = DockStyle.Fill;
-            lblChord.Font = new Font("Roboto", 48F, FontStyle.Bold, GraphicsUnit.Point);
-            lblChord.Location = new Point(208, 62);
+            lblChord.Font = new Font("Segoe Print", 72F, FontStyle.Bold, GraphicsUnit.Point);
+            lblChord.Location = new Point(263, 106);
             lblChord.Name = "lblChord";
-            lblChord.Size = new Size(517, 403);
+            lblChord.Size = new Size(462, 339);
             lblChord.TabIndex = 6;
             lblChord.Text = "C#";
             lblChord.TextAlign = ContentAlignment.MiddleCenter;
@@ -158,11 +162,12 @@
             lblStreak.AutoSize = true;
             tblLayout.SetColumnSpan(lblStreak, 2);
             lblStreak.Dock = DockStyle.Fill;
-            lblStreak.Font = new Font("Roboto", 36F, FontStyle.Bold, GraphicsUnit.Point);
+            lblStreak.Font = new Font("Russo One", 71.99999F, FontStyle.Bold, GraphicsUnit.Point);
             lblStreak.Image = (Image)resources.GetObject("lblStreak.Image");
-            lblStreak.Location = new Point(731, 62);
+            lblStreak.ImageAlign = ContentAlignment.TopCenter;
+            lblStreak.Location = new Point(731, 106);
             lblStreak.Name = "lblStreak";
-            lblStreak.Size = new Size(167, 403);
+            lblStreak.Size = new Size(167, 339);
             lblStreak.TabIndex = 7;
             lblStreak.Text = "0";
             lblStreak.TextAlign = ContentAlignment.BottomCenter;
@@ -170,79 +175,61 @@
             // btnSkip
             // 
             btnSkip.AutoSize = true;
+            tblLayout.SetColumnSpan(btnSkip, 2);
             btnSkip.Dock = DockStyle.Fill;
-            btnSkip.Location = new Point(815, 468);
+            btnSkip.Font = new Font("Roboto", 36F, FontStyle.Regular, GraphicsUnit.Point);
+            btnSkip.Location = new Point(731, 448);
             btnSkip.Name = "btnSkip";
-            btnSkip.Size = new Size(83, 72);
+            tblLayout.SetRowSpan(btnSkip, 2);
+            btnSkip.Size = new Size(167, 92);
             btnSkip.TabIndex = 2;
             btnSkip.Text = "Skip";
             btnSkip.UseVisualStyleBackColor = true;
             btnSkip.Click += btnSkip_Click;
-            // 
-            // btnHelp
-            // 
-            btnHelp.AutoSize = true;
-            btnHelp.Dock = DockStyle.Fill;
-            btnHelp.Location = new Point(731, 468);
-            btnHelp.Name = "btnHelp";
-            btnHelp.Size = new Size(78, 72);
-            btnHelp.TabIndex = 3;
-            btnHelp.Text = "Help!";
-            btnHelp.UseVisualStyleBackColor = true;
             // 
             // lblEmptyHeart
             // 
             lblEmptyHeart.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             lblEmptyHeart.AutoSize = true;
             lblEmptyHeart.Image = (Image)resources.GetObject("lblEmptyHeart.Image");
-            lblEmptyHeart.Location = new Point(163, 0);
+            lblEmptyHeart.Location = new Point(192, 0);
             lblEmptyHeart.Name = "lblEmptyHeart";
-            lblEmptyHeart.Size = new Size(0, 62);
+            lblEmptyHeart.Size = new Size(0, 106);
             lblEmptyHeart.TabIndex = 8;
             // 
-            // panelHeartContainer
+            // lblHelper
             // 
-            panelHeartContainer.Controls.Add(pbFullHeart);
-            panelHeartContainer.Controls.Add(pbEmptyHeart);
-            panelHeartContainer.Location = new Point(163, 468);
-            panelHeartContainer.Name = "panelHeartContainer";
-            panelHeartContainer.Size = new Size(39, 72);
-            panelHeartContainer.TabIndex = 11;
-            // 
-            // pbFullHeart
-            // 
-            pbFullHeart.Dock = DockStyle.Fill;
-            pbFullHeart.Image = (Image)resources.GetObject("pbFullHeart.Image");
-            pbFullHeart.Location = new Point(0, 0);
-            pbFullHeart.Name = "pbFullHeart";
-            pbFullHeart.Size = new Size(39, 72);
-            pbFullHeart.SizeMode = PictureBoxSizeMode.Zoom;
-            pbFullHeart.TabIndex = 10;
-            pbFullHeart.TabStop = false;
-            pbFullHeart.Visible = false;
-            pbFullHeart.Click += pbFullHeart_Click;
-            // 
-            // pbEmptyHeart
-            // 
-            pbEmptyHeart.Dock = DockStyle.Fill;
-            pbEmptyHeart.Image = (Image)resources.GetObject("pbEmptyHeart.Image");
-            pbEmptyHeart.Location = new Point(0, 0);
-            pbEmptyHeart.Name = "pbEmptyHeart";
-            pbEmptyHeart.Size = new Size(39, 72);
-            pbEmptyHeart.SizeMode = PictureBoxSizeMode.Zoom;
-            pbEmptyHeart.TabIndex = 9;
-            pbEmptyHeart.TabStop = false;
-            pbEmptyHeart.Click += pbEmptyHeart_Click;
+            lblHelper.AutoSize = true;
+            lblHelper.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
+            lblHelper.Location = new Point(263, 445);
+            lblHelper.Name = "lblHelper";
+            lblHelper.Size = new Size(278, 25);
+            lblHelper.TabIndex = 13;
+            lblHelper.Text = "Hi! Select Chord Packs to begin!";
             // 
             // lblErrorOut
             // 
             lblErrorOut.AutoSize = true;
-            lblErrorOut.Dock = DockStyle.Fill;
-            lblErrorOut.Location = new Point(208, 465);
+            lblErrorOut.Location = new Point(263, 494);
             lblErrorOut.Name = "lblErrorOut";
-            lblErrorOut.Size = new Size(517, 78);
+            lblErrorOut.Size = new Size(43, 15);
             lblErrorOut.TabIndex = 12;
-            lblErrorOut.Text = "Hi! Select Chord Packs to begin!";
+            lblErrorOut.Text = "ERROR";
+            // 
+            // btnHeart
+            // 
+            btnHeart.AutoSize = true;
+            btnHeart.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            btnHeart.BackgroundImage = Properties.Resources.emptyHeart_removebg_preview;
+            btnHeart.BackgroundImageLayout = ImageLayout.Zoom;
+            btnHeart.Dock = DockStyle.Fill;
+            btnHeart.Location = new Point(192, 448);
+            btnHeart.Name = "btnHeart";
+            tblLayout.SetRowSpan(btnHeart, 2);
+            btnHeart.Size = new Size(65, 92);
+            btnHeart.TabIndex = 14;
+            btnHeart.UseVisualStyleBackColor = true;
+            btnHeart.Click += btnHeart_Click;
             // 
             // ListenTick
             // 
@@ -260,13 +247,11 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(901, 543);
             Controls.Add(tblLayout);
+            MinimumSize = new Size(500, 250);
             Name = "ChordoMain";
             Text = "Chordo Window";
             tblLayout.ResumeLayout(false);
             tblLayout.PerformLayout();
-            panelHeartContainer.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)pbFullHeart).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pbEmptyHeart).EndInit();
             ResumeLayout(false);
         }
 
@@ -276,18 +261,16 @@
         private Label lblTitle;
         private Button btnStartStop;
         private Button btnSkip;
-        private Button btnHelp;
         private Button btnToggleMusic;
         private Label lblTimer;
         private Label lblChord;
         private Label lblStreak;
         private Label lblEmptyHeart;
-        private PictureBox pbEmptyHeart;
-        private PictureBox pbFullHeart;
-        private Panel panelHeartContainer;
         private System.Windows.Forms.Timer ListenTick;
         private System.Windows.Forms.Timer CountdownTimer;
         private CheckedListBox clbPacks;
         private Label lblErrorOut;
+        private Label lblHelper;
+        private Button btnHeart;
     }
 }

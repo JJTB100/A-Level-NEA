@@ -210,11 +210,13 @@ namespace Chordo
             // check if it's favourited or not
             if (currentChord.favourite)
             {
-                favBoost = 100;
+                favBoost = 1;
 
             }
-            // calc score
-            double score = (timeEffect * (time) + prevTimeEffect * (currentChord.time) + favouriteEffect * (favBoost)) / 100 * currentChord.timesPlayed;
+            // calc score ( a number between 0 and 1)
+            double score = (timeEffect * (time/15) + prevTimeEffect * (currentChord.time/15) + favouriteEffect * (favBoost)) / currentChord.timesPlayed;
+            Console.WriteLine($"SCORE CALC: new TIME: {time}, Prev TIME: {currentChord.time}, favBoost: {favBoost}, times Played: {currentChord.timesPlayed}, score: {score}");
+
             // store score and time
             currentChord.score = score;
             currentChord.time = time;

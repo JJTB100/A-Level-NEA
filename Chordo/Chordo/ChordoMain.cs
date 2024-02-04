@@ -1,3 +1,4 @@
+using Chordo.Properties;
 using NAudio.Wave;
 using System.Windows.Forms;
 
@@ -11,16 +12,16 @@ namespace Chordo
         bool btnStartMode = true;
         int streak = 0;
         List<int> checkedPacks = new List<int>();
+        public static int MAXTIMEALLOWED = 15; //seconds
         /// <summary>
         /// gets the form going
         /// </summary>
         public ChordoMain()
         {
-
             InitializeComponent();
-            lblErrorOut.Text = "Hi! Please select a pack to continue.";
+            lblHelper.Text = "Hi! Please select at least one chord pack (on the left) to continue.";
             Rev = new RevisionEngine(lblErrorOut, clbPacks);
-            
+
 
             //Presence check for a microphone
             WaveIn devCheck = new WaveIn();
@@ -35,34 +36,28 @@ namespace Chordo
         /// </summary>
         void ResetAll()
         {
-            pbFullHeart.Visible = false;
-            pbEmptyHeart.Visible = true;
-            time = 60;
-            //lblChord.Text = "Press Start to continue";
+            btnHeart.BackgroundImage = Resources.emptyHeart_removebg_preview;
+            time = MAXTIMEALLOWED;
             lblTimer.Text = "__";
+            lblTimer.ForeColor = Color.Black;
             NoScreen();
         }
-        /// <summary>
-        /// Runs when the full heart is clicked, makes it an empty heart and unfavourites the chord
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void pbFullHeart_Click(object sender, EventArgs e)
+        private void btnHeart_Click(object sender, EventArgs e)
         {
-            Rev.MakeFavourite(false);
-            pbFullHeart.Visible = false;
-            pbEmptyHeart.Visible = true;
-        }
-        /// <summary>
-        /// Runs when the empty heart is clicked, makes it full and favourits the chord
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void pbEmptyHeart_Click(object sender, EventArgs e)
-        {
-            Rev.MakeFavourite(true);
-            pbFullHeart.Visible = true;
-            pbEmptyHeart.Visible = false;
+            if (Rev.GetCurrentChord().favourite == false)
+            {
+                btnHeart.BackgroundImage = Resources.heart_removebg_preview;
+                lblHelper.Text = "Chord Favourited! You should see this chord more from now on.";
+                Rev.MakeFavourite(true);
+
+            }
+            else
+            {
+                btnHeart.BackgroundImage = Resources.emptyHeart_removebg_preview;
+                lblHelper.Text = "Chord Unfavourited!";
+                Rev.MakeFavourite(false);
+
+            }
         }
         /// <summary>
         /// Runs on start or stop button clicked, if start button then initilise a lot of the microphone and revision engine, and load the chord packs in the checked list. 
@@ -87,11 +82,11 @@ namespace Chordo
                 //Shows error if no packs selected
                 if (checkedPacks.Count == 0)
                 {
-                    MessageBox.Show("You must select at least 1 pack");
+                    lblErrorOut.Text = "You must select at least one chord pack to continue";
                 }
                 else
                 {
-
+                    lblHelper.Text = "Play the chord before the time runs out!";
                     //Start the mic listening and reset
                     mic.StartListening();
                     NewQuestion();
@@ -134,15 +129,15 @@ namespace Chordo
             //makes sure there are notes
             if (notesFound != null && notesFound.Count != 0)
             {
-                
+
                 //make sure none of the notes are repeated
                 foreach (string note in notesFound)
                 {
                     if (!notesPlayed.Contains(note))
                     {
-                        notesPlayed.Add(note);                        
+                        notesPlayed.Add(note);
                     }
-          }
+                }
                 foreach (string note in notesPlayed) { Console.Write(note + ", "); }
                 Console.WriteLine();
                 //check if the notes are in the chord and do stuff based on that
@@ -177,10 +172,9 @@ namespace Chordo
             //Update the favourite icon accordingly
             if (Rev.GetCurrentChord().IsFav() == true)
             {
-                pbEmptyHeart.Visible = false;
-                pbFullHeart.Visible = true;
+                btnHeart.BackgroundImage = Resources.heart_removebg_preview;
             }
-            //Start timer countdown from 60
+            //Start timer countdown from MAXTIMEALLOWED
             CountdownTimer.Enabled = true;
             notesPlayed = new List<string>();
             ListenTick.Enabled = true;
@@ -193,7 +187,7 @@ namespace Chordo
         /// </summary>
         private void CorrectScreen()
         {
-            Rev.CalcChordScore(60 - time);
+            Rev.CalcChordScore(MAXTIMEALLOWED - time);
             lblChord.BackgroundImage = new Bitmap(Chordo.Properties.Resources.GreenTick);
             lblChord.BackgroundImageLayout = ImageLayout.Zoom;
             streak++;
@@ -205,7 +199,7 @@ namespace Chordo
         /// </summary>
         private void IncorrectScreen()
         {
-            Rev.CalcChordScore(60);
+            Rev.CalcChordScore(MAXTIMEALLOWED);
             lblChord.BackgroundImage = new Bitmap(Chordo.Properties.Resources.RedCross);
             lblChord.BackgroundImageLayout = ImageLayout.Zoom;
             streak = 0;
@@ -231,7 +225,6 @@ namespace Chordo
         private void CountdownTimer_Tick(object sender, EventArgs e)
         {
             time--;
-            lblTimer.Text = time.ToString();
             if (time < 0)
             {
                 IncorrectScreen();
@@ -240,6 +233,15 @@ namespace Chordo
                 NewQuestion();
 
             }
+            if (time < 5 )
+            {
+                lblTimer.ForeColor = Color.Red;
+
+                lblTimer.Font = new Font("Russo One", 72, FontStyle.Underline);
+            }
+            lblTimer.Text = time.ToString();
+            System.Threading.Thread.Sleep(500);
+            lblTimer.Font = new Font("Russo One", 72, FontStyle.Bold);
         }
         /// <summary>
         /// Runs on press of the skip button
@@ -253,7 +255,9 @@ namespace Chordo
 
             NewQuestion();
         }
-
-
+        private void clbPacks_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            lblHelper.Text = "Great! You've selected a chord pack! If you're happy with your selection, get your piano ready and press 'Start'!";
+        }
     }
 }
