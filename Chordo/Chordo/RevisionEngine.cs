@@ -214,7 +214,7 @@ namespace Chordo
 
             }
             // calc score ( a number between 0 and 1)
-            double score = (timeEffect * (time/15) + prevTimeEffect * (currentChord.time/15) + favouriteEffect * (favBoost)) / currentChord.timesPlayed;
+            double score = (timeEffect * (time / 15) + prevTimeEffect * (currentChord.time / 15) + favouriteEffect * (favBoost)) / currentChord.timesPlayed;
             Console.WriteLine($"SCORE CALC: new TIME: {time}, Prev TIME: {currentChord.time}, favBoost: {favBoost}, times Played: {currentChord.timesPlayed}, score: {score}");
 
             // store score and time

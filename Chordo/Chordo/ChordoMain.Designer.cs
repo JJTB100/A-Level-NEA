@@ -138,7 +138,7 @@
             // 
             lblTimer.AutoSize = true;
             lblTimer.Dock = DockStyle.Fill;
-            lblTimer.Font = new Font("Russo One", 71.99999F, FontStyle.Bold, GraphicsUnit.Point);
+            lblTimer.Font = new Font("Microsoft Sans Serif", 71.99999F, FontStyle.Bold, GraphicsUnit.Point);
             lblTimer.Location = new Point(3, 0);
             lblTimer.Name = "lblTimer";
             lblTimer.Size = new Size(183, 106);
@@ -162,7 +162,7 @@
             lblStreak.AutoSize = true;
             tblLayout.SetColumnSpan(lblStreak, 2);
             lblStreak.Dock = DockStyle.Fill;
-            lblStreak.Font = new Font("Russo One", 71.99999F, FontStyle.Bold, GraphicsUnit.Point);
+            lblStreak.Font = new Font("Microsoft Sans Serif", 71.99999F, FontStyle.Bold, GraphicsUnit.Point);
             lblStreak.Image = (Image)resources.GetObject("lblStreak.Image");
             lblStreak.ImageAlign = ContentAlignment.TopCenter;
             lblStreak.Location = new Point(731, 106);
@@ -171,6 +171,7 @@
             lblStreak.TabIndex = 7;
             lblStreak.Text = "0";
             lblStreak.TextAlign = ContentAlignment.BottomCenter;
+            lblStreak.Click += lblStreak_Click;
             // 
             // btnSkip
             // 

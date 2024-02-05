@@ -9,6 +9,9 @@ namespace Chordo
         RevisionEngine Rev;
         Listener mic;
         int time;
+        /// <summary>
+        /// If True, Start when btn pressed, if false, stop.
+        /// </summary>
         bool btnStartMode = true;
         int streak = 0;
         List<int> checkedPacks = new List<int>();
@@ -145,14 +148,14 @@ namespace Chordo
                 if (correct)
                 {
                     CorrectScreen();
-                    System.Threading.Thread.Sleep(QUESTION_TIMEOUT);
+                    QuestionTimeOut();
 
                     NewQuestion();
                 }
                 else if (notesPlayed.Count > MAXNOTESBEFOREINCORRECT)
                 {
                     IncorrectScreen();
-                    System.Threading.Thread.Sleep(QUESTION_TIMEOUT);
+                    QuestionTimeOut();
 
                     NewQuestion();
                 }
@@ -162,6 +165,23 @@ namespace Chordo
             ListenTick.Start();
         }
         /// <summary>
+        /// Pause the system and streak displayed if multiple of 5 
+        /// </summary>
+        private void QuestionTimeOut()
+        {
+            if (streak % 5 == 0 && streak != 0)
+            {
+                lblChord.Text = $"Your streak is {streak}!";
+                lblChord.Font = new Font("Segoe Print", 24, FontStyle.Bold);
+                Application.DoEvents();
+                System.Threading.Thread.Sleep(QUESTION_TIMEOUT);
+                lblChord.Font = new Font("Segoe Print", 72, FontStyle.Bold);
+
+
+            }
+            System.Threading.Thread.Sleep(QUESTION_TIMEOUT);
+        }
+        /// <summary>
         /// Gives a new chord
         /// </summary>
         private void NewQuestion()
@@ -169,6 +189,11 @@ namespace Chordo
             ResetAll();
             //Display Chord
             lblChord.Text = Rev.NextChord(checkedPacks).name.ToString();
+            //set the colour of the chord to the colour relative to the score
+            int red = (int)Math.Round(255*(Rev.GetCurrentChord().score));
+            Color color = Color.FromArgb(red, 128, 128);
+            lblChord.ForeColor = color;
+
             //Update the favourite icon accordingly
             if (Rev.GetCurrentChord().IsFav() == true)
             {
@@ -228,20 +253,20 @@ namespace Chordo
             if (time < 0)
             {
                 IncorrectScreen();
-                System.Threading.Thread.Sleep(QUESTION_TIMEOUT);
+                QuestionTimeOut();
 
                 NewQuestion();
 
             }
-            if (time < 5 )
+            if (time < 5)
             {
                 lblTimer.ForeColor = Color.Red;
 
                 lblTimer.Font = new Font("Russo One", 72, FontStyle.Underline);
             }
             lblTimer.Text = time.ToString();
-            System.Threading.Thread.Sleep(500);
-            lblTimer.Font = new Font("Russo One", 72, FontStyle.Bold);
+
+
         }
         /// <summary>
         /// Runs on press of the skip button
@@ -251,13 +276,32 @@ namespace Chordo
         private void btnSkip_Click(object sender, EventArgs e)
         {
             IncorrectScreen();
-            System.Threading.Thread.Sleep(QUESTION_TIMEOUT);
+            QuestionTimeOut();
 
             NewQuestion();
         }
         private void clbPacks_SelectedIndexChanged(object sender, EventArgs e)
         {
-            lblHelper.Text = "Great! You've selected a chord pack! If you're happy with your selection, get your piano ready and press 'Start'!";
+            if (btnStartMode)
+            {
+                lblHelper.Text = "Great! You've selected a chord pack! If you're happy with your selection, get your piano ready and press 'Start'!";
+            }
+            else
+            {
+                lblHelper.Text = "To change the chords you're playing, press stop, then select them.";
+            }
+        }
+        /// <summary>
+        /// CHEAT TO BE REMOVED
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void lblStreak_Click(object sender, EventArgs e)
+        {
+            CorrectScreen();
+            QuestionTimeOut();
+
+            NewQuestion();
         }
     }
 }
