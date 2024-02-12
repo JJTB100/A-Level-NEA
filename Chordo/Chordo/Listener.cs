@@ -1,4 +1,7 @@
-﻿ using NAudio.Wave;
+﻿using Accord.Statistics;
+using CsvHelper.Configuration.Attributes;
+using Microsoft.VisualBasic.Logging;
+using NAudio.Wave;
 
 namespace Chordo
 {
@@ -11,6 +14,7 @@ namespace Chordo
         private int BUFFERSIZE;
         public int DEVICENUMBER;
         private double threshold;
+        double[] hannWindow;
 
         /// <summary>
         /// Consructor - instantiates helper classes with values given, starts buffer.
@@ -61,8 +65,8 @@ namespace Chordo
         public string WhatNoteAmI(double frequency)
         {
             double MIDInum = 12 * Math.Log2((double)frequency / (double)440) + 69;
-            //Validation: too far away from actaul frequency
-            if(MIDInum - Math.Round(MIDInum)>Math.Abs(0.7))
+            //Validation: too far away from actual frequency
+            if(Math.Abs(MIDInum - Math.Round(MIDInum))>(0.3))
             {
                 return null;
             }
@@ -89,17 +93,60 @@ namespace Chordo
             int BYTES_PER_POINT = 2;
             // create a (32-bit) int array ready to fill with the 16-bit data
             int PointCount = frames.Length / BYTES_PER_POINT;
-            //Console.WriteLine(PointCount);
 
+            GenerateHannWindow();
             double[] pcm = CalculatePCMValues(frames, PointCount);
-            double[] fftDb = DbScale(CalculateFFTValues(frames, PointCount, pcm));
+            
+            for (int i = 0; i < hannWindow.Length; i++)
+            {
+                pcm[i] *= hannWindow[i];
+            }
+            double[] fftFull = FFT(pcm);
+            double[] fftReal = CalculateFFTRealValues(frames, PointCount, pcm);
+            //double[] fftDb = DbScale(fftReal);
+            double[] hps = CalculateHPS(fftFull);
+            double[] NormalisedHPS = NormaliseHPS(hps);
 
-            double fftMaxFreq = RATE / 2;
-            double pcmPointSpacingMs = RATE / 1000;
-            double fftPointSpacingHz = fftMaxFreq / PointCount;
+            for (int i = 0; i < hannWindow.Length/2; i++)
+            {
+                NormalisedHPS[i] *= hannWindow[i];
+            }
 
-            double[][] eventData = { pcm, fftDb, new[] { pcmPointSpacingMs }, new[] { fftPointSpacingHz } };
-            return PullNotes(fftDb, PointCount);
+            return PullNotes(NormalisedHPS, fftReal, PointCount);
+        }
+
+        private double[] NormaliseHPS(double[] hps)
+        {
+            double[] Nhps = new double[hps.Length];
+            //using z-score normalisation
+            //calculate mean and standard deviation of the hps
+            double meanHps = hps.Mean();
+            double stdHps = hps.StandardDeviation();
+            //foreach element in hps, center the values around the mean with a std dev of 1
+            for(int i = 0;i < Nhps.Length;i++)
+            {
+                Nhps[i] = (hps[i]-meanHps) / stdHps;
+            }
+            return Nhps;
+        }
+
+        private double[] CalculateHPS(double[] fftFull)
+        {
+            //Iterate through the positive half of the fft array
+            double[] hps = new double[fftFull.Length / 2];
+            for (int i = 1; i < hps.Length; i++)
+            {
+                hps[i] = 0;
+                // Iterate through its harmonics (j = i, j = 2 * i, j = 3 * i, ...)
+                for (int j = i; j < fftFull.Length; j += i)
+                {
+                    // Multiply magnitudes of frequency and its harmonic:
+                    hps[i] += fftFull[i] * fftFull[j];
+                    
+                }
+            }
+
+            return hps;
         }
 
         public double[] CalculatePCMValues(byte[] frames, int PointCount)
@@ -113,15 +160,26 @@ namespace Chordo
                 // read the int16 from the two bytes
                 var val = BitConverter.ToInt16(frames, i * 2);
 
-                // store the value in Ys as a percent
-                pcm[i] = (double)(val) / Math.Pow(2, 16) * 100.0;
+                // store the value
+                pcm[i] = (double)(val);
 
             }
 
 
             return pcm;
         }
-        public double[] CalculateFFTValues(byte[] frames, int PointCount, double[] pcm)
+        //Some code borrowed from ScottPlot
+        private void GenerateHannWindow()
+        {
+            hannWindow = new double[BUFFERSIZE / 2];
+            var angleUnit = 2 * Math.PI / (hannWindow.Length - 1);
+            for (int i = 0; i < hannWindow.Length; i++)
+            {
+                hannWindow[i] = 0.5 * (1 - Math.Cos(i * angleUnit));
+            }
+        }
+        //End of code borrowed from ScottPlot
+        public double[] CalculateFFTRealValues(byte[] frames, int PointCount, double[] pcm)
         {
             double[] fftReal = new double[PointCount / 2];
 
@@ -159,19 +217,21 @@ namespace Chordo
         /// <summary>
         /// Get the notes from an array of fft values, including validation: variable threshold, 
         /// </summary>
-        /// <param name="fftRealDB"></param>
-        /// <param name="PointCount"></param>
         /// <returns></returns>
-        public List<string> PullNotes(double[] fftRealDB, int PointCount)
+        public List<string> PullNotes(double[] hps, double[] fftIn, int PointCount)
         {
             List<string> notes = new List<string>();
-            threshold = Calibrate(fftRealDB);
-            for (int i = 0; i < fftRealDB.Length; i++)
+            threshold = Calibrate(hps);
+            for (int i = 0; i < fftIn.Length; i++)
             {
-                if (fftRealDB[i] > threshold && i > 10)
+                if (hps[i] >= threshold && i>10)
                 {
-                    
-                    int frequency = (i * RATE) / PointCount;
+
+                    double frequency = (i * RATE) / PointCount;
+                    if(frequency != 0)
+                    {
+                        Console.WriteLine("Freq:"+frequency);
+                    }
                     string note = WhatNoteAmI(frequency);
                     if(note != null)
                     {
@@ -187,30 +247,31 @@ namespace Chordo
 
         }
 
-        private double Calibrate(double[] fftRealDB)
+        private double Calibrate(double[] fftIn)
         {
             double highest=0;
             double secondHighest = 0;
             double thirdHighest = 0;
             double fourthHighest = 0;
-            for (int i = 0; i < fftRealDB.Length; i++)
+            for (int i = 0; i < fftIn.Length; i++)
             {
-                if (fftRealDB[i] > highest)
+                if (fftIn[i] > highest)
                 {
-                    highest = fftRealDB[i];
+                    highest = fftIn[i];
                 }
-                else if (fftRealDB[i] > secondHighest){
-                    secondHighest = fftRealDB[i];
+                else if (fftIn[i] > secondHighest){
+                    secondHighest = fftIn[i];
                 }
-                else if (fftRealDB[i] > thirdHighest)
+                else if (fftIn[i] > thirdHighest)
                 {
-                    thirdHighest = fftRealDB[i];
+                    thirdHighest = fftIn[i];
                 }
-                else if (fftRealDB[i] > fourthHighest)
+                else if (fftIn[i] > fourthHighest)
                 {
-                    fourthHighest = fftRealDB[i];
+                    fourthHighest = fftIn[i];
                 }
             }
+            
             return fourthHighest;
         }
     }

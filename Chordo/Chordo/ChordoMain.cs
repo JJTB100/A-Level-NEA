@@ -191,8 +191,8 @@ namespace Chordo
             lblChord.Text = Rev.NextChord(checkedPacks).name.ToString();
             //set the colour of the chord to the colour relative to the score
             int red = (int)Math.Round(255*(Rev.GetCurrentChord().score));
-            Color color = Color.FromArgb(red, 128, 128);
-            lblChord.ForeColor = color;
+            //Color color = Color.FromArgb(red, 128, 128);
+            //lblChord.ForeColor = color;
 
             //Update the favourite icon accordingly
             if (Rev.GetCurrentChord().IsFav() == true)
