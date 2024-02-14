@@ -1,4 +1,5 @@
-﻿using Accord.Statistics;
+﻿using Accord.Math;
+using Accord.Statistics;
 using CsvHelper.Configuration.Attributes;
 using Microsoft.VisualBasic.Logging;
 using NAudio.Wave;
@@ -15,6 +16,7 @@ namespace Chordo
         public int DEVICENUMBER;
         private double threshold;
         double[] hannWindow;
+        public double minAmplitude;
 
         /// <summary>
         /// Consructor - instantiates helper classes with values given, starts buffer.
@@ -22,7 +24,7 @@ namespace Chordo
         /// <param name="pBUFFERSIZE">Size of the buffer each sample | default: 8192 bytes</param>
         /// <param name="pRATE">sample rate of the wave | default = 44100Hz</param>
         /// <param name="pDeviceNumber">The device number of the microphone | default = 1</param>
-        public Listener(int pBUFFERSIZE = 8192, int pRATE = 44100, int pDeviceNumber = 1)
+        public Listener(int pBUFFERSIZE = 8192, int pRATE = 44100, int pDeviceNumber = 1, double minAmplitude = 0)
         {
             RATE = pRATE;
             BUFFERSIZE = pBUFFERSIZE;
@@ -34,6 +36,7 @@ namespace Chordo
                 WaveFormat = new WaveFormat(RATE, 1)
             };
             bwp = new BufferedWaveProvider(waveIn.WaveFormat);
+            this.minAmplitude = minAmplitude;
         }
         /// <summary>
         /// Event handler that activates when there is data available in the class.
@@ -101,53 +104,55 @@ namespace Chordo
             {
                 pcm[i] *= hannWindow[i];
             }
-            double[] fftFull = FFT(pcm);
             double[] fftReal = CalculateFFTRealValues(frames, PointCount, pcm);
-            //double[] fftDb = DbScale(fftReal);
-            double[] hps = CalculateHPS(fftFull);
-            double[] NormalisedHPS = NormaliseHPS(hps);
+            double[] fftDb = DbScale(fftReal);
+            fftDb.Normalize(true);
 
-            for (int i = 0; i < hannWindow.Length/2; i++)
-            {
-                NormalisedHPS[i] *= hannWindow[i];
-            }
-
-            return PullNotes(NormalisedHPS, fftReal, PointCount);
+            //double[] hps = CalculateHPS(fftReal);
+            //double[] NormalisedHPS = hps.Normalize();
+            return PullNotes(fftDb, fftDb, PointCount);
         }
-
-        private double[] NormaliseHPS(double[] hps)
+        private double[] Normalise(double[] hps)
         {
             double[] Nhps = new double[hps.Length];
             //using z-score normalisation
             //calculate mean and standard deviation of the hps
             double meanHps = hps.Mean();
             double stdHps = hps.StandardDeviation();
-            //foreach element in hps, center the values around the mean with a std dev of 1
+            //foreach element, center the values around the mean with a std dev of 1
             for(int i = 0;i < Nhps.Length;i++)
             {
                 Nhps[i] = (hps[i]-meanHps) / stdHps;
             }
             return Nhps;
         }
-
-        private double[] CalculateHPS(double[] fftFull)
+        
+        private double[] CalculateHPS(double[] fftReal)
         {
             //Iterate through the positive half of the fft array
-            double[] hps = new double[fftFull.Length / 2];
+            double[] hps = new double[fftReal.Length];
             for (int i = 1; i < hps.Length; i++)
             {
-                hps[i] = 0;
+
+                if (fftReal[i]<minAmplitude)
+                {
+                    fftReal[i] = 0;
+                }
                 // Iterate through its harmonics (j = i, j = 2 * i, j = 3 * i, ...)
-                for (int j = i; j < fftFull.Length; j += i)
+                for (int j = i; j < fftReal.Length; j += i)
                 {
                     // Multiply magnitudes of frequency and its harmonic:
-                    hps[i] += fftFull[i] * fftFull[j];
-                    
+                    {
+                        hps[i] += fftReal[i] * fftReal[j];
+                        fftReal[j] = 0;
+                    }
+
                 }
             }
 
             return hps;
         }
+        
 
         public double[] CalculatePCMValues(byte[] frames, int PointCount)
         {
@@ -220,29 +225,31 @@ namespace Chordo
         /// <returns></returns>
         public List<string> PullNotes(double[] hps, double[] fftIn, int PointCount)
         {
+            int PrevI = 0;
             List<string> notes = new List<string>();
             threshold = Calibrate(hps);
             for (int i = 0; i < fftIn.Length; i++)
             {
-                if (hps[i] >= threshold && i>10)
+                if (hps[i] >= threshold && i > 10 && i-PrevI>5)
                 {
-
                     double frequency = (i * RATE) / PointCount;
-                    if(frequency != 0)
+                    if (frequency != 0)
                     {
-                        Console.WriteLine("Freq:"+frequency);
+                        Console.WriteLine("Freq:" + frequency + " " + i + " " + fftIn[i] + " " + threshold + " " + minAmplitude);
                     }
                     string note = WhatNoteAmI(frequency);
-                    if(note != null)
+                    if (note != null)
                     {
                         if (!notes.Contains(note))
                         {
                             notes.Add(note);
                         }
                     }
-
+                    PrevI = i;
                 }
             }
+            
+
             return notes;
 
         }
@@ -253,26 +260,54 @@ namespace Chordo
             double secondHighest = 0;
             double thirdHighest = 0;
             double fourthHighest = 0;
+
             for (int i = 0; i < fftIn.Length; i++)
             {
                 if (fftIn[i] > highest)
                 {
+                    fourthHighest = thirdHighest;
+                    thirdHighest = secondHighest;
+                    secondHighest = highest; 
                     highest = fftIn[i];
+                    
                 }
-                else if (fftIn[i] > secondHighest){
+                else if (fftIn[i] > secondHighest)
+                {
+                    fourthHighest = thirdHighest;
+                    thirdHighest = secondHighest;
                     secondHighest = fftIn[i];
                 }
-                else if (fftIn[i] > thirdHighest)
+
+                else if (fftIn[i] > highest)
                 {
+                    fourthHighest = thirdHighest;
                     thirdHighest = fftIn[i];
                 }
-                else if (fftIn[i] > fourthHighest)
+
+                if (fftIn[i] > highest)
                 {
                     fourthHighest = fftIn[i];
                 }
             }
-            
-            return fourthHighest;
+            //Console.WriteLine(fourthHighest + " " + thirdHighest + " "+  secondHighest + " "+ highest);
+            if(fourthHighest > minAmplitude)
+            {
+                return fourthHighest;
+
+            }
+            else if(thirdHighest > minAmplitude)
+            {
+                return thirdHighest;
+            }
+            else if(secondHighest > minAmplitude)
+            {
+                return secondHighest;
+            }
+            else if (highest > minAmplitude)
+            {
+                return highest;
+            }
+            else { return 1000000; }
         }
     }
 }

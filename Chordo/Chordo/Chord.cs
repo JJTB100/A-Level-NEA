@@ -23,7 +23,7 @@ namespace Chordo
             AddNote(note5);
             name = pName;
             score = 0;
-            Console.WriteLine(GetNotesAsString());
+            
 
         }
         public Chord()

@@ -32,10 +32,8 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ChordoMain));
             tblLayout = new TableLayoutPanel();
             clbPacks = new CheckedListBox();
-            lblTitle = new Label();
             btnStartStop = new Button();
             btnToggleMusic = new Button();
-            lblTimer = new Label();
             lblChord = new Label();
             lblStreak = new Label();
             btnSkip = new Button();
@@ -43,24 +41,26 @@
             lblHelper = new Label();
             lblErrorOut = new Label();
             btnHeart = new Button();
+            lblTimer = new Label();
+            lblTitle = new Label();
+            sensitivitySlider = new TrackBar();
             ListenTick = new System.Windows.Forms.Timer(components);
             CountdownTimer = new System.Windows.Forms.Timer(components);
             tblLayout.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)sensitivitySlider).BeginInit();
             SuspendLayout();
             // 
             // tblLayout
             // 
             tblLayout.ColumnCount = 5;
             tblLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20.9766922F));
-            tblLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 7.880133F));
-            tblLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 51.9422874F));
+            tblLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 17.8690338F));
+            tblLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 41.9533844F));
             tblLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 9.333332F));
             tblLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 9.777777F));
             tblLayout.Controls.Add(clbPacks, 0, 1);
-            tblLayout.Controls.Add(lblTitle, 2, 0);
             tblLayout.Controls.Add(btnStartStop, 3, 0);
             tblLayout.Controls.Add(btnToggleMusic, 0, 2);
-            tblLayout.Controls.Add(lblTimer, 0, 0);
             tblLayout.Controls.Add(lblChord, 2, 1);
             tblLayout.Controls.Add(lblStreak, 3, 1);
             tblLayout.Controls.Add(btnSkip, 3, 2);
@@ -68,6 +68,9 @@
             tblLayout.Controls.Add(lblHelper, 2, 2);
             tblLayout.Controls.Add(lblErrorOut, 2, 3);
             tblLayout.Controls.Add(btnHeart, 1, 2);
+            tblLayout.Controls.Add(lblTimer, 1, 1);
+            tblLayout.Controls.Add(lblTitle, 2, 0);
+            tblLayout.Controls.Add(sensitivitySlider, 0, 0);
             tblLayout.Dock = DockStyle.Fill;
             tblLayout.Location = new Point(0, 0);
             tblLayout.Name = "tblLayout";
@@ -92,17 +95,6 @@
             clbPacks.Size = new Size(183, 333);
             clbPacks.TabIndex = 1;
             clbPacks.SelectedIndexChanged += clbPacks_SelectedIndexChanged;
-            // 
-            // lblTitle
-            // 
-            lblTitle.Anchor = AnchorStyles.Top;
-            lblTitle.AutoSize = true;
-            lblTitle.Font = new Font("Microsoft Sans Serif", 36F, FontStyle.Bold, GraphicsUnit.Point);
-            lblTitle.Location = new Point(399, 0);
-            lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(189, 55);
-            lblTitle.TabIndex = 0;
-            lblTitle.Text = "Chordo";
             // 
             // btnStartStop
             // 
@@ -134,25 +126,14 @@
             btnToggleMusic.TextAlign = ContentAlignment.BottomCenter;
             btnToggleMusic.UseVisualStyleBackColor = true;
             // 
-            // lblTimer
-            // 
-            lblTimer.AutoSize = true;
-            lblTimer.Dock = DockStyle.Fill;
-            lblTimer.Font = new Font("Microsoft Sans Serif", 71.99999F, FontStyle.Bold, GraphicsUnit.Point);
-            lblTimer.Location = new Point(3, 0);
-            lblTimer.Name = "lblTimer";
-            lblTimer.Size = new Size(183, 106);
-            lblTimer.TabIndex = 5;
-            lblTimer.Text = "00";
-            // 
             // lblChord
             // 
             lblChord.AutoSize = true;
             lblChord.Dock = DockStyle.Fill;
             lblChord.Font = new Font("Segoe Print", 72F, FontStyle.Bold, GraphicsUnit.Point);
-            lblChord.Location = new Point(263, 106);
+            lblChord.Location = new Point(353, 106);
             lblChord.Name = "lblChord";
-            lblChord.Size = new Size(462, 339);
+            lblChord.Size = new Size(372, 339);
             lblChord.TabIndex = 6;
             lblChord.Text = "C#";
             lblChord.TextAlign = ContentAlignment.MiddleCenter;
@@ -202,7 +183,7 @@
             // 
             lblHelper.AutoSize = true;
             lblHelper.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            lblHelper.Location = new Point(263, 445);
+            lblHelper.Location = new Point(353, 445);
             lblHelper.Name = "lblHelper";
             lblHelper.Size = new Size(278, 25);
             lblHelper.TabIndex = 13;
@@ -211,7 +192,7 @@
             // lblErrorOut
             // 
             lblErrorOut.AutoSize = true;
-            lblErrorOut.Location = new Point(263, 494);
+            lblErrorOut.Location = new Point(353, 494);
             lblErrorOut.Name = "lblErrorOut";
             lblErrorOut.Size = new Size(43, 15);
             lblErrorOut.TabIndex = 12;
@@ -227,10 +208,42 @@
             btnHeart.Location = new Point(192, 448);
             btnHeart.Name = "btnHeart";
             tblLayout.SetRowSpan(btnHeart, 2);
-            btnHeart.Size = new Size(65, 92);
+            btnHeart.Size = new Size(155, 92);
             btnHeart.TabIndex = 14;
             btnHeart.UseVisualStyleBackColor = true;
             btnHeart.Click += btnHeart_Click;
+            // 
+            // lblTimer
+            // 
+            lblTimer.AutoSize = true;
+            lblTimer.Dock = DockStyle.Fill;
+            lblTimer.Font = new Font("Microsoft Sans Serif", 71.99999F, FontStyle.Bold, GraphicsUnit.Point);
+            lblTimer.Location = new Point(192, 106);
+            lblTimer.Name = "lblTimer";
+            lblTimer.Size = new Size(155, 339);
+            lblTimer.TabIndex = 5;
+            lblTimer.Text = "00";
+            // 
+            // lblTitle
+            // 
+            lblTitle.Anchor = AnchorStyles.Top;
+            lblTitle.AutoSize = true;
+            lblTitle.Font = new Font("Microsoft Sans Serif", 36F, FontStyle.Bold, GraphicsUnit.Point);
+            lblTitle.Location = new Point(444, 0);
+            lblTitle.Name = "lblTitle";
+            lblTitle.Size = new Size(189, 55);
+            lblTitle.TabIndex = 0;
+            lblTitle.Text = "Chordo";
+            // 
+            // sensitivitySlider
+            // 
+            sensitivitySlider.Location = new Point(3, 3);
+            sensitivitySlider.Maximum = 100;
+            sensitivitySlider.Name = "sensitivitySlider";
+            sensitivitySlider.Size = new Size(183, 45);
+            sensitivitySlider.TabIndex = 15;
+            sensitivitySlider.Value = 10;
+            sensitivitySlider.Scroll += sensitivitySlider_Scroll;
             // 
             // ListenTick
             // 
@@ -253,6 +266,7 @@
             Text = "Chordo Window";
             tblLayout.ResumeLayout(false);
             tblLayout.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)sensitivitySlider).EndInit();
             ResumeLayout(false);
         }
 
@@ -273,5 +287,6 @@
         private Label lblErrorOut;
         private Label lblHelper;
         private Button btnHeart;
+        private TrackBar sensitivitySlider;
     }
 }

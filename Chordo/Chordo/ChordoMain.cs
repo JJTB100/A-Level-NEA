@@ -9,6 +9,7 @@ namespace Chordo
         RevisionEngine Rev;
         Listener mic;
         int time;
+        double Sensitivity;
         /// <summary>
         /// If True, Start when btn pressed, if false, stop.
         /// </summary>
@@ -31,6 +32,8 @@ namespace Chordo
             //tbc
 
             mic = new Listener();
+            mic.minAmplitude = (double)sensitivitySlider.Value / 100;
+
             ResetAll();
 
         }
@@ -190,7 +193,7 @@ namespace Chordo
             //Display Chord
             lblChord.Text = Rev.NextChord(checkedPacks).name.ToString();
             //set the colour of the chord to the colour relative to the score
-            int red = (int)Math.Round(255*(Rev.GetCurrentChord().score));
+            int red = (int)Math.Round(255 * (Rev.GetCurrentChord().score));
             //Color color = Color.FromArgb(red, 128, 128);
             //lblChord.ForeColor = color;
 
@@ -302,6 +305,11 @@ namespace Chordo
             QuestionTimeOut();
 
             NewQuestion();
+        }
+
+        private void sensitivitySlider_Scroll(object sender, EventArgs e)
+        {
+            mic.minAmplitude = (double)sensitivitySlider.Value/100;
         }
     }
 }
