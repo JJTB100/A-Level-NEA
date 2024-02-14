@@ -309,7 +309,22 @@ namespace Chordo
 
         private void sensitivitySlider_Scroll(object sender, EventArgs e)
         {
-            mic.minAmplitude = (double)sensitivitySlider.Value/100;
+            mic.minAmplitude = (double)sensitivitySlider.Value / 100;
+        }
+
+        private void btnToggleHighContrast_Click(object sender, EventArgs e)
+        {
+
+            if (lblChord.BackColor == SystemColors.Control)
+            {
+                lblChord.BackColor = SystemColors.ControlText;
+                lblChord.ForeColor = SystemColors.Control;
+            }
+            else
+            {
+                lblChord.BackColor = SystemColors.Control;
+                lblChord.ForeColor = SystemColors.ControlText;
+            }
         }
     }
 }
