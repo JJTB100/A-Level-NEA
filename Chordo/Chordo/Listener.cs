@@ -289,8 +289,9 @@ namespace Chordo
                     fourthHighest = fftIn[i];
                 }
             }
+            return highest;
             //Console.WriteLine(fourthHighest + " " + thirdHighest + " "+  secondHighest + " "+ highest);
-            if(fourthHighest > minAmplitude)
+            if (fourthHighest > minAmplitude)
             {
                 return fourthHighest;
 
