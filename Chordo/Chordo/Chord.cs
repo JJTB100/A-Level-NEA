@@ -12,9 +12,20 @@ namespace Chordo
 
         public int time = ChordoMain.MAXTIMEALLOWED;
         public int timesPlayed = 0;
-
+        /// <summary>
+        /// Construct the chord
+        /// </summary>
+        /// <param name="pName"></param>
+        /// <param name="numNotes"></param>
+        /// <param name="note1"></param>
+        /// <param name="note2"></param>
+        /// <param name="note3"></param>
+        /// <param name="note4"></param>
+        /// <param name="note5"></param>
         public Chord(string pName, int numNotes, string note1 = null, string note2 = null, string note3 = null, string note4 = null, string note5 = null)
         {
+            //go  jonny you can do it!! Stay sharp, c sharp
+     
             notes = new List<string>();
             AddNote(note1);
             AddNote(note2);

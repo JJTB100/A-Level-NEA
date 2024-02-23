@@ -29,7 +29,7 @@ namespace Chordo
             RATE = pRATE;
             BUFFERSIZE = pBUFFERSIZE;
 
-            //initialise WaveIn class
+            // Initialise WaveIn class
             waveIn = new WaveIn
             {
                 DeviceNumber = DEVICENUMBER,
@@ -48,14 +48,21 @@ namespace Chordo
             //Add data to buffer
             bwp.AddSamples(e.Buffer, 0, e.BytesRecorded);
         }
-
+        /// <summary>
+        /// Starts listening to the mic
+        /// </summary>
         public void StartListening()
         {
+            // Starts the buffer
             waveIn.DataAvailable += new EventHandler<WaveInEventArgs>(waveIn_DataAvailable);
             bwp.BufferLength = BUFFERSIZE * 2;
             bwp.DiscardOnBufferOverflow = true;
+            // Starts recording the wave
             waveIn.StartRecording();
         }
+        /// <summary>
+        /// Stops listening to the mic
+        /// </summary>
         public void StopListening()
         {
             waveIn.StopRecording();
@@ -67,18 +74,24 @@ namespace Chordo
         /// <returns></returns>
         public string WhatNoteAmI(double frequency)
         {
+            // Calculate MIDInum
             double MIDInum = 12 * Math.Log2((double)frequency / (double)440) + 69;
-            //Validation: too far away from actual frequency
+            // Validation: too far away from actual frequency
             if(Math.Abs(MIDInum - Math.Round(MIDInum))>(0.3))
             {
                 return null;
             }
+            // Round the MIDInum
             int MIDInumRounded = (int)Math.Round(MIDInum);
             string[] notes = { "A", "A♯", "B", "C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯" };
+            // find the note
             string note = notes[((MIDInumRounded - 21) % 12)];
             return note;
         }
-
+        /// <summary>
+        /// Process the data on tick
+        /// </summary>
+        /// <returns></returns>
         public List<string> ProcessData()
         {
 
@@ -97,21 +110,36 @@ namespace Chordo
             // create a (32-bit) int array ready to fill with the 16-bit data
             int PointCount = frames.Length / BYTES_PER_POINT;
 
+            // Generate the Hanning Window
             GenerateHannWindow();
+
+            // Get the pcm values from the wave
             double[] pcm = CalculatePCMValues(frames, PointCount);
             
+            // Apply the Hann Window
             for (int i = 0; i < hannWindow.Length; i++)
             {
                 pcm[i] *= hannWindow[i];
             }
+
+            // Get the fftReal Values
             double[] fftReal = CalculateFFTRealValues(frames, PointCount, pcm);
+            // Adjust for Db
             double[] fftDb = DbScale(fftReal);
+            // Normalise 0-1
             fftDb.Normalize(true);
 
             //double[] hps = CalculateHPS(fftReal);
             //double[] NormalisedHPS = hps.Normalize();
+
+            // Return the notes played
             return PullNotes(fftDb, fftDb, PointCount);
         }
+        /// <summary>
+        /// Normalise
+        /// </summary>
+        /// <param name="hps"></param>
+        /// <returns></returns>
         private double[] Normalise(double[] hps)
         {
             double[] Nhps = new double[hps.Length];
