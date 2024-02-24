@@ -28,9 +28,9 @@ namespace Chordo
         {
             this.ErrorOut = pErrorOut;
             AllChords = new List<Chord>();
+            // Iterate over the files in the folder
             foreach (string file in Directory.EnumerateFiles(@"..\..\..\..\Packs"))
             {
-                
                 //validation, don't add if pack hasn't got chords in it
                 ChordPack? chordpck = (loadChords($"{file}"));
                 if (chordpck != null)
@@ -40,10 +40,12 @@ namespace Chordo
                 }
                 
             }
+            // Foreach pack add the chords to a complete list of all chords
             for (int i = 0; i < packs.Count; i++)
             {
                 AllChords.AddRange(packs[i].GetChords());
             }
+            // load any pre-existing data
             LoadUserData(@"..\..\..\..\UserData.csv");
         }
         Regex ScanChordsReg = new Regex("(.+), (\\d), (.+), (.+), (.+);");

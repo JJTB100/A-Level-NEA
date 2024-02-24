@@ -5,6 +5,9 @@ namespace Chordo
 {
     sealed class ChordMap : ClassMap<Chord>
     {
+        /// <summary>
+        /// Constructor maps vars to map
+        /// </summary>
         public ChordMap()
         {
             Map(m => m.name);

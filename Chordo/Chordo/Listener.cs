@@ -154,7 +154,11 @@ namespace Chordo
             }
             return Nhps;
         }
-        
+        /// <summary>
+        /// Calculates The HPS values for a given fft
+        /// </summary>
+        /// <param name="fftReal"></param>
+        /// <returns></returns>
         private double[] CalculateHPS(double[] fftReal)
         {
             //Iterate through the positive half of the fft array
@@ -180,8 +184,12 @@ namespace Chordo
 
             return hps;
         }
-        
-
+        /// <summary>
+        /// Calculates the pcm values from the byte frames
+        /// </summary>
+        /// <param name="frames"></param>
+        /// <param name="PointCount"></param>
+        /// <returns></returns>
         public double[] CalculatePCMValues(byte[] frames, int PointCount)
         {
 
@@ -202,6 +210,9 @@ namespace Chordo
             return pcm;
         }
         //Some code borrowed from ScottPlot
+        /// <summary>
+        /// Generates a Hann window in global space
+        /// </summary>
         private void GenerateHannWindow()
         {
             hannWindow = new double[BUFFERSIZE / 2];
@@ -212,32 +223,53 @@ namespace Chordo
             }
         }
         //End of code borrowed from ScottPlot
+        /// <summary>
+        /// Calculates real fft values
+        /// </summary>
+        /// <param name="frames"></param>
+        /// <param name="PointCount"></param>
+        /// <param name="pcm"></param>
+        /// <returns></returns>
         public double[] CalculateFFTRealValues(byte[] frames, int PointCount, double[] pcm)
         {
             double[] fftReal = new double[PointCount / 2];
 
             //get fft values
             var fft = FFT(pcm);
+            // Copy only the first half because the second half is imaginary
             Array.Copy(fft, fftReal, fftReal.Length);
             return fftReal;
         }
+        /// <summary>
+        /// Applies the FFT
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns>Array of double[] where the first half is the imaginary parts</returns>
         public double[] FFT(double[] data)
         {
             double[] fft = new double[data.Length];
             System.Numerics.Complex[] fftComplex = new System.Numerics.Complex[data.Length];
+            // Populate the array with complex numbers where the real part is the data
             for (int i = 0; i < data.Length; i++)
                 fftComplex[i] = new System.Numerics.Complex(data[i], 0.0);
+            // Apply the transform
             Accord.Math.FourierTransform.FFT(fftComplex, Accord.Math.FourierTransform.Direction.Forward);
+            // Take the magnitude of the complex data
             for (int i = 0; i < data.Length; i++)
                 fft[i] = fftComplex[i].Magnitude;
             return fft;
         }
-
+        /// <summary>
+        /// Adjusts the amplitudes of the fft values for the Db scale
+        /// </summary>
+        /// <param name="fftReal"></param>
+        /// <returns></returns>
         public double[] DbScale(double[] fftReal)
         {
             double[] fftRealDB = new double[fftReal.Length];
 
             int a = 0;
+            // Iterate over the array and apply a (log base 10 )*10
             foreach (var f in fftReal)
             {
                 var y = (Math.Log10(f) * 10);
@@ -255,19 +287,30 @@ namespace Chordo
         {
             int PrevI = 0;
             List<string> notes = new List<string>();
+            // Create a threshold based on hps/amplitudes
             threshold = Calibrate(hps);
+            
+            // Iterate over the array
             for (int i = 0; i < fftIn.Length; i++)
             {
+                // If the amplitude is within the threshold and far enough above 0 and far enough away from the prev datum
                 if (hps[i] >= threshold && i > 10 && i-PrevI>5)
                 {
+                    // Find the frequency for the datum
                     double frequency = (i * RATE) / PointCount;
+                    /* DEBUG CONSOLE OUT
                     if (frequency != 0)
                     {
                         Console.WriteLine("Freq:" + frequency + " " + i + " " + fftIn[i] + " " + threshold + " " + minAmplitude);
-                    }
+                    }*/
+                    //
+                    // Find the not name related to the freq (returns null if unvalid)
                     string note = WhatNoteAmI(frequency);
+
+                    // Make sure the freq was valid
                     if (note != null)
                     {
+                        // Add note if note already in list
                         if (!notes.Contains(note))
                         {
                             notes.Add(note);
@@ -281,7 +324,11 @@ namespace Chordo
             return notes;
 
         }
-
+        /// <summary>
+        /// Make a new threshold from the amplitudes of the fft/hps
+        /// </summary>
+        /// <param name="fftIn"></param>
+        /// <returns></returns>
         private double Calibrate(double[] fftIn)
         {
             double highest=0;
@@ -289,6 +336,7 @@ namespace Chordo
             double thirdHighest = 0;
             double fourthHighest = 0;
 
+            // find highest, second highest, third ...
             for (int i = 0; i < fftIn.Length; i++)
             {
                 if (fftIn[i] > highest)
@@ -317,8 +365,12 @@ namespace Chordo
                     fourthHighest = fftIn[i];
                 }
             }
-            return highest;
+
+
             //Console.WriteLine(fourthHighest + " " + thirdHighest + " "+  secondHighest + " "+ highest);
+
+            // NOTE: if only one note is to be heard, only need to return highest
+            /*
             if (fourthHighest > minAmplitude)
             {
                 return fourthHighest;
@@ -332,7 +384,8 @@ namespace Chordo
             {
                 return secondHighest;
             }
-            else if (highest > minAmplitude)
+            else*/
+            if (highest > minAmplitude)
             {
                 return highest;
             }

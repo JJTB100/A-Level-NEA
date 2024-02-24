@@ -1,8 +1,0 @@
-Major 7th Chords
-Amaj7, 4, A, C♯, E, G♯;
-Bmaj7, 4, B, D♯, F, A♯;
-Cmaj7, 4, C, E, G, B;
-Dmaj7, 4, D, F♯, A, C♯;
-Emaj7, 4, E, G♯, B, D♯;
-Fmaj7, 4, F, A, C, E;
-Gmaj7, 4, G, B, D, F♯;

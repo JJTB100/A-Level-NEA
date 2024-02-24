@@ -22,18 +22,14 @@ namespace Chordo
         /// </summary>
         public ChordoMain()
         {
+            // Start Form & Engines
             InitializeComponent();
             lblHelper.Text = "Hi! Please select at least one chord pack (on the left) to continue.";
             Rev = new RevisionEngine(lblErrorOut, clbPacks);
 
-
-            //Presence check for a microphone
-            WaveIn devCheck = new WaveIn();
-            //tbc
-
             mic = new Listener();
             mic.minAmplitude = (double)sensitivitySlider.Value / 100;
-
+            // Reset to start
             ResetAll();
 
         }
@@ -42,21 +38,30 @@ namespace Chordo
         /// </summary>
         void ResetAll()
         {
+            // Reset Heart to empty
             btnHeart.BackgroundImage = Resources.emptyHeart_removebg_preview;
+            // reset time to max
             time = MAXTIMEALLOWED;
             lblTimer.Text = "__";
             lblTimer.ForeColor = Color.Black;
+            // Reset visual feedback
             NoScreen();
         }
+        /// <summary>
+        /// On heart button clicked, favourite or unfavourite the chord
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnHeart_Click(object sender, EventArgs e)
         {
+            // if it's not favourited already, favourite and change heart colour
             if (Rev.GetCurrentChord().favourite == false)
             {
                 btnHeart.BackgroundImage = Resources.heart_removebg_preview;
                 lblHelper.Text = "Chord Favourited! You should see this chord more from now on.";
                 Rev.MakeFavourite(true);
-
             }
+            // else unfavourite it and change to empty heart
             else
             {
                 btnHeart.BackgroundImage = Resources.emptyHeart_removebg_preview;
@@ -119,6 +124,7 @@ namespace Chordo
 
         public int MAXNOTESBEFOREINCORRECT = 100;
 
+        // Pause length between questiosn
         public int QUESTION_TIMEOUT = 1000;
         /// <summary>
         /// runs at a regular interval based on the clock. analyses notes and checks whether they are in the chord or not.
@@ -144,7 +150,10 @@ namespace Chordo
                         notesPlayed.Add(note);
                     }
                 }
+                string notesToOut = "";
+                foreach (string note in notesPlayed) { notesToOut += note; }
                 foreach (string note in notesPlayed) { Console.Write(note + ", "); }
+                lblErrorOut.Text = "Notes Played: " + notesToOut;
                 Console.WriteLine();
                 //check if the notes are in the chord and do stuff based on that
                 bool correct = Rev.CheckNotes(notesPlayed);
@@ -253,6 +262,7 @@ namespace Chordo
         private void CountdownTimer_Tick(object sender, EventArgs e)
         {
             time--;
+            // check if time has run out
             if (time < 0)
             {
                 IncorrectScreen();
@@ -261,6 +271,7 @@ namespace Chordo
                 NewQuestion();
 
             }
+            // check if time is almost out
             if (time < 5)
             {
                 lblTimer.ForeColor = Color.Red;
@@ -283,8 +294,14 @@ namespace Chordo
 
             NewQuestion();
         }
+        /// <summary>
+        /// Runs on index changed of pack selector
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void clbPacks_SelectedIndexChanged(object sender, EventArgs e)
         {
+            // update help messages
             if (btnStartMode)
             {
                 lblHelper.Text = "Great! You've selected a chord pack! If you're happy with your selection, get your piano ready and press 'Start'!";
@@ -295,23 +312,19 @@ namespace Chordo
             }
         }
         /// <summary>
-        /// CHEAT TO BE REMOVED
+        /// on change of sens slider, change mic amp mins
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void lblStreak_Click(object sender, EventArgs e)
-        {
-            CorrectScreen();
-            QuestionTimeOut();
-
-            NewQuestion();
-        }
-
         private void sensitivitySlider_Scroll(object sender, EventArgs e)
         {
             mic.minAmplitude = (double)sensitivitySlider.Value / 100;
         }
-
+        /// <summary>
+        /// Toggle high contrast button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnToggleHighContrast_Click(object sender, EventArgs e)
         {
 

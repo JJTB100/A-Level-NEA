@@ -3,6 +3,9 @@ using System.Web;
 
 namespace Chordo
 {
+    /// <summary>
+    /// Chord Object 
+    /// </summary>
     internal class Chord
     {
         List<string> notes;
@@ -23,9 +26,7 @@ namespace Chordo
         /// <param name="note4"></param>
         /// <param name="note5"></param>
         public Chord(string pName, int numNotes, string note1 = null, string note2 = null, string note3 = null, string note4 = null, string note5 = null)
-        {
-            //go  jonny you can do it!! Stay sharp, c sharp
-     
+        {     
             notes = new List<string>();
             AddNote(note1);
             AddNote(note2);
@@ -54,12 +55,19 @@ namespace Chordo
                 notes.Add(note);
             }
         }
-
+        /// <summary>
+        /// Returns all the notes in the chord
+        /// </summary>
+        /// <returns>List<String> notes</returns>
         internal List<string> GetNotes()
         {
             return notes;
         }
 
+        /// <summary>
+        /// Returns the notes in the chord as a string
+        /// </summary>
+        /// <returns></returns>
         internal string GetNotesAsString()
         {
             string output = "";
@@ -70,6 +78,10 @@ namespace Chordo
             return output;
         }
 
+        /// <summary>
+        /// Returns true/false dependant on the chord's favourite state
+        /// </summary>
+        /// <returns></returns>
         internal bool IsFav()
         {
             return favourite;
