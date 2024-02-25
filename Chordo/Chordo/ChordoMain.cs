@@ -27,7 +27,7 @@ namespace Chordo
             lblHelper.Text = "Hi! Please select at least one chord pack (on the left) to continue.";
             Rev = new RevisionEngine(lblErrorOut, clbPacks);
 
-            mic = new Listener();
+            mic = new Listener(lblErrorOut);
             mic.minAmplitude = (double)sensitivitySlider.Value / 100;
             // Reset to start
             ResetAll();
@@ -38,6 +38,7 @@ namespace Chordo
         /// </summary>
         void ResetAll()
         {
+            // lblErrorOut.Text = "";
             // Reset Heart to empty
             btnHeart.BackgroundImage = Resources.emptyHeart_removebg_preview;
             // reset time to max
@@ -153,7 +154,8 @@ namespace Chordo
                 string notesToOut = "";
                 foreach (string note in notesPlayed) { notesToOut += note; }
                 foreach (string note in notesPlayed) { Console.Write(note + ", "); }
-                lblErrorOut.Text = "Notes Played: " + notesToOut;
+                lblErrorOut.Text = "\nNotes Played: ";
+                lblErrorOut.Text += notesToOut;
                 Console.WriteLine();
                 //check if the notes are in the chord and do stuff based on that
                 bool correct = Rev.CheckNotes(notesPlayed);
@@ -289,10 +291,14 @@ namespace Chordo
         /// <param name="e"></param>
         private void btnSkip_Click(object sender, EventArgs e)
         {
-            IncorrectScreen();
-            QuestionTimeOut();
+            if (!btnStartMode)
+            {
+                IncorrectScreen();
+                QuestionTimeOut();
 
-            NewQuestion();
+                NewQuestion();
+            }
+
         }
         /// <summary>
         /// Runs on index changed of pack selector
@@ -338,6 +344,17 @@ namespace Chordo
                 lblChord.BackColor = SystemColors.Control;
                 lblChord.ForeColor = SystemColors.ControlText;
             }
+        }
+        /// <summary>
+        /// Cheat - to be removed (testing only)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void lblStreak_Click(object sender, EventArgs e)
+        {
+            CorrectScreen();
+            QuestionTimeOut();
+            NewQuestion() ;
         }
     }
 }

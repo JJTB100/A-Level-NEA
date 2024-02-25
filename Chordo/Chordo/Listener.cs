@@ -16,6 +16,7 @@ namespace Chordo
         public int DEVICENUMBER;
         private double threshold;
         double[] hannWindow;
+        Label lblErrorOut;
         public double minAmplitude;
 
         /// <summary>
@@ -24,17 +25,30 @@ namespace Chordo
         /// <param name="pBUFFERSIZE">Size of the buffer each sample | default: 8192 bytes</param>
         /// <param name="pRATE">sample rate of the wave | default = 44100Hz</param>
         /// <param name="pDeviceNumber">The device number of the microphone | default = 1</param>
-        public Listener(int pBUFFERSIZE = 8192, int pRATE = 44100, int pDeviceNumber = 1, double minAmplitude = 0)
+        public Listener(Label lblErrorOut, int pBUFFERSIZE = 8192, int pRATE = 44100, int pDeviceNumber = 0, double minAmplitude = 0)
         {
+            DEVICENUMBER = pDeviceNumber;
             RATE = pRATE;
             BUFFERSIZE = pBUFFERSIZE;
-
+            this.lblErrorOut = lblErrorOut;
             // Initialise WaveIn class
             waveIn = new WaveIn
             {
                 DeviceNumber = DEVICENUMBER,
                 WaveFormat = new WaveFormat(RATE, 1)
             };
+
+            try
+            {
+                WaveInCapabilities deviceInfo = WaveIn.GetCapabilities(DEVICENUMBER);
+                Console.WriteLine(deviceInfo.ToString());
+                lblErrorOut.Text += "\nDevice {0}: {1}, {2} channels" + DEVICENUMBER + " " + deviceInfo.ProductName + " " + deviceInfo.Channels;
+            }
+            catch
+            {
+                lblErrorOut.Text += "\nNo Mic Detected - plug in a microhone for the best experience.";
+            }
+            
             bwp = new BufferedWaveProvider(waveIn.WaveFormat);
             this.minAmplitude = minAmplitude;
         }
@@ -58,7 +72,12 @@ namespace Chordo
             bwp.BufferLength = BUFFERSIZE * 2;
             bwp.DiscardOnBufferOverflow = true;
             // Starts recording the wave
-            waveIn.StartRecording();
+            try
+            {
+                waveIn.StartRecording();
+            }
+            catch { }
+
         }
         /// <summary>
         /// Stops listening to the mic
@@ -289,7 +308,6 @@ namespace Chordo
             List<string> notes = new List<string>();
             // Create a threshold based on hps/amplitudes
             threshold = Calibrate(hps);
-            
             // Iterate over the array
             for (int i = 0; i < fftIn.Length; i++)
             {
@@ -385,11 +403,11 @@ namespace Chordo
                 return secondHighest;
             }
             else*/
-            if (highest > minAmplitude)
+            //if (highest > minAmplitude)
             {
                 return highest;
             }
-            else { return 1000000; }
+            //else { return 1000000; }
         }
     }
 }

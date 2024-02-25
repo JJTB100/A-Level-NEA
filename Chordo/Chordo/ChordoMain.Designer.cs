@@ -162,7 +162,7 @@
             lblStreak.TabIndex = 7;
             lblStreak.Text = "0";
             lblStreak.TextAlign = ContentAlignment.BottomCenter;
-
+            lblStreak.Click += lblStreak_Click;
             // 
             // btnSkip
             // 

@@ -1,0 +1,7 @@
+Major - Intermediate
+C♯maj, 3, C♯, F, G♯;
+E♭maj, 3, D♯, G, A♯;
+F♯maj, 3, F♯, A♯, C♯;
+A♭maj, 3, G♯, C, D♯;
+B♭maj, 3, D♯, D, F;
+
