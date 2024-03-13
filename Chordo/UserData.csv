@@ -17,9 +17,9 @@ D,0.16666666666666666,True,15,9
 E,0,False,15,0
 F,0,False,15,0
 G,0.13636363636363635,True,15,11
-C♯min,0,False,15,0
-E♭min,0,False,15,0
-F♯min,0,False,15,0
+C♯min,0.5,False,2,1
+E♭min,0.5,False,0,1
+F♯min,0.5,False,11,1
 Cmin,0,False,15,0
 Amin,0,False,15,0
 Dmin,0,False,15,0
